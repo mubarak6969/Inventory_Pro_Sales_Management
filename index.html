@@ -305,6 +305,37 @@ nav a.active:hover{
   inset 0 1px 0 rgba(255,255,255,.12)
 }
 
+.logout-btn{
+ width:calc(100% - 24px);
+ margin:10px 12px 0;
+ display:flex;
+ align-items:center;
+ gap:12px;
+ padding:11px 12px;
+ border-radius:13px;
+ border:1px solid transparent;
+ background:transparent;
+ color:var(--muted);
+ font-size:13px;
+ cursor:pointer;
+ transition:var(--transition);
+ text-align:left
+}
+
+.logout-btn span:first-child{
+ font-size:16px;
+ width:20px;
+ text-align:center
+}
+
+.logout-btn:hover{
+ transform:translate3d(5px,0,0) scale(1.025);
+ color:var(--red);
+ background:rgba(255,102,125,.08);
+ border-color:rgba(255,102,125,.20);
+ box-shadow:0 8px 24px rgba(255,102,125,.08)
+}
+
 nav a span:first-child{
  font-size:16px;
  width:20px;
@@ -1183,6 +1214,15 @@ tbody tr:hover .badge.yellow{
   0 0 30px rgba(105,82,210,.07),
   inset 0 1px 0 rgba(255,255,255,.9)
 }
+.light nav a.active{
+ color:var(--text);
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.16),
+   rgba(79,140,255,.07)
+  );
+}
 
 .light .icon-btn,
 .light .user{
@@ -1519,67 +1559,35 @@ nav a:active,
 <aside class="sidebar">
 
   <div class="brand">
-
     <div class="logo">I</div>
-
     <div>
       <strong>Inventory Pro</strong>
       <small>Business OS</small>
     </div>
-
   </div>
 
-
-  <div class="nav-title">
-    Workspace
-  </div>
-
+  <div class="nav-title">Workspace</div>
 
   <nav>
-
-    <a class="active" href="index.html">
-      <span>⌂</span>
-      <span>Dashboard</span>
-    </a>
-
-    <a href="shop.html">
-      <span>▣</span>
-      <span>Shop & Products</span>
-    </a>
-
-    <a href="godown.html">
-      <span>▤</span>
-      <span>Godown</span>
-    </a>
-
-    <a href="billing.html">
-      <span>▤</span>
-      <span>Billing</span>
-    </a>
-
+    <a class="active" href="index.html"><span>⌂</span><span>Dashboard</span></a>
+    <a href="shop.html"><span>▣</span><span>Shop & Products</span></a>
+    <a href="godown.html"><span>▤</span><span>Godown</span></a>
+    <a href="billing.html"><span>▤</span><span>Billing</span></a>
   </nav>
 
+  <button class="logout-btn" id="logoutBtn" type="button">
+    <span>↪</span>
+    <span>Logout</span>
+  </button>
 
   <div class="sidebar-bottom">
-
     <div class="user">
-
-      <div class="avatar">
-        A
-      </div>
-
+      <div class="avatar">A</div>
       <div>
-        <strong style="font-size:11px">
-          Admin
-        </strong>
-
-        <small>
-          Administrator
-        </small>
+        <strong style="font-size:11px">Admin</strong>
+        <small>Administrator</small>
       </div>
-
     </div>
-
   </div>
 
 </aside>
@@ -1588,187 +1596,54 @@ nav a:active,
 <main>
 
 <header class="topbar">
-
   <div>
-
-    <div class="eyebrow" id="dashboardDate">
-      Today
-    </div>
-
-    <h1 id="dashboardGreeting">
-      Good day, Admin
-    </h1>
-
+    <div class="eyebrow" id="dashboardDate">Today</div>
+    <h1 id="dashboardGreeting">Good day, Admin</h1>
   </div>
-
-
   <div class="actions">
-
-    <button
-      class="icon-btn"
-      id="themeBtn"
-      title="Toggle theme"
-      type="button"
-      aria-label="Toggle theme"
-    >
-      ☾
-    </button>
-
-
-    <button
-      class="icon-btn"
-      id="downloadExcel"
-      type="button"
-      title="Download 30-day Credit / Debit Excel report"
-      aria-label="Download Excel report"
-    >
-      ⇩
-    </button>
-
-
-    <button
-      class="icon-btn"
-      id="notificationBtn"
-      type="button"
-      title="Notifications"
-      aria-label="Notifications"
-    >
-      ♢
-    </button>
-
+    <button class="icon-btn" id="themeBtn" title="Toggle theme" type="button" aria-label="Toggle theme">☾</button>
+    <button class="icon-btn" id="downloadExcel" type="button" title="Download 30-day Credit / Debit Excel report" aria-label="Download Excel report">⇩</button>
+    <button class="icon-btn" id="notificationBtn" type="button" title="Notifications" aria-label="Notifications">♢</button>
   </div>
-
 </header>
 
 
 <section class="grid">
 
   <div class="card stat">
-
     <div class="stat-top">
-
-      <span class="stat-label">
-        Total Stock
-      </span>
-
-      <span class="stat-icon">
-        ▤
-      </span>
-
+      <span class="stat-label">Total Stock</span>
+      <span class="stat-icon">▤</span>
     </div>
-
-
-    <div
-      class="value"
-      id="totalStock"
-    >
-      0
-    </div>
-
-
-    <div
-      class="change"
-      id="stockStatus"
-    >
-      Current warehouse stock
-    </div>
-
+    <div class="value" id="totalStock">0</div>
+    <div class="change" id="stockStatus">Current warehouse stock</div>
   </div>
 
-
   <div class="card stat">
-
     <div class="stat-top">
-
-      <span class="stat-label">
-        Total Products
-      </span>
-
-      <span class="stat-icon">
-        ▣
-      </span>
-
+      <span class="stat-label">Total Products</span>
+      <span class="stat-icon">▣</span>
     </div>
-
-
-    <div
-      class="value"
-      id="totalProducts"
-    >
-      0
-    </div>
-
-
-    <div
-      class="change"
-      id="productStatus"
-    >
-      Products in inventory
-    </div>
-
+    <div class="value" id="totalProducts">0</div>
+    <div class="change" id="productStatus">Products in inventory</div>
   </div>
 
-
   <div class="card stat">
-
     <div class="stat-top">
-
-      <span class="stat-label">
-        Low Stock
-      </span>
-
-      <span class="stat-icon">
-        !
-      </span>
-
+      <span class="stat-label">Low Stock</span>
+      <span class="stat-icon">!</span>
     </div>
-
-
-    <div
-      class="value"
-      id="lowStock"
-    >
-      0
-    </div>
-
-
-    <div
-      class="change warn"
-      id="lowStockStatus"
-    >
-      Needs attention
-    </div>
-
+    <div class="value" id="lowStock">0</div>
+    <div class="change warn" id="lowStockStatus">Needs attention</div>
   </div>
 
-
   <div class="card stat">
-
     <div class="stat-top">
-
-      <span class="stat-label">
-        Expiry Attention
-      </span>
-
-      <span class="stat-icon">
-        ◷
-      </span>
-
+      <span class="stat-label">Expiry Attention</span>
+      <span class="stat-icon">◷</span>
     </div>
-
-
-    <div
-      class="value"
-      id="expiringSoon"
-    >
-      0
-    </div>
-
-
-    <div class="change danger">
-      3 days or less
-    </div>
-
+    <div class="value" id="expiringSoon">0</div>
+    <div class="change danger">3 days or less</div>
   </div>
 
 </section>
@@ -1777,95 +1652,35 @@ nav a:active,
 <section class="content">
 
   <div class="card panel">
-
     <div class="panel-head">
-
       <div>
-
-        <h2>
-          Stock Overview
-        </h2>
-
-        <span>
-          Current warehouse inventory
-        </span>
-
+        <h2>Stock Overview</h2>
+        <span>Current warehouse inventory</span>
       </div>
-
-
-      <span id="stockTotalLabel">
-        0 units
-      </span>
-
+      <span id="stockTotalLabel">0 units</span>
     </div>
-
-
-    <div
-      class="chart"
-      id="stockChart"
-    >
-
-      <div class="empty-dashboard">
-        Loading inventory...
-      </div>
-
+    <div class="chart" id="stockChart">
+      <div class="empty-dashboard">Loading inventory...</div>
     </div>
-
   </div>
 
-
   <div class="card panel">
-
     <div class="panel-head">
-
       <div>
-
-        <h2>
-          Expiry Alerts
-        </h2>
-
-        <span>
-          Products requiring attention
-        </span>
-
+        <h2>Expiry Alerts</h2>
+        <span>Products requiring attention</span>
       </div>
-
-
-      <span
-        id="expiryCountLabel"
-        style="color:var(--red)"
-      >
-        0 items
-      </span>
-
+      <span id="expiryCountLabel" style="color:var(--red)">0 items</span>
     </div>
-
-
-    <div
-      class="alert-list"
-      id="expiryAlerts"
-    >
-
+    <div class="alert-list" id="expiryAlerts">
       <div class="alert">
-
         <i class="dot yellow"></i>
-
         <div>
-
-          <strong>
-            Checking inventory...
-          </strong>
-
-          <small>
-            Please wait
-          </small>
-
+          <strong>Checking inventory...</strong>
+          <small>Please wait</small>
         </div>
-
       </div>
-
     </div>
-
   </div>
 
 </section>
@@ -1874,1212 +1689,299 @@ nav a:active,
 <section class="card table-panel">
 
   <div class="panel-head">
-
     <div>
-
-      <h2>
-        Recent Stock Activity
-      </h2>
-
-      <span>
-        Latest inventory changes
-      </span>
-
+      <h2>Recent Stock Activity</h2>
+      <span>Latest inventory changes</span>
     </div>
-
-
-    <span id="activityCount">
-      0 activities
-    </span>
-
+    <span id="activityCount">0 activities</span>
   </div>
 
-
   <table>
-
     <thead>
-
       <tr>
-
-        <th>
-          Product
-        </th>
-
-        <th>
-          Type
-        </th>
-
-        <th>
-          Quantity
-        </th>
-
-        <th>
-          Source
-        </th>
-
-        <th>
-          Status
-        </th>
-
+        <th>Product</th>
+        <th>Type</th>
+        <th>Quantity</th>
+        <th>Source</th>
+        <th>Status</th>
       </tr>
-
     </thead>
-
-
     <tbody id="activityTable">
-
       <tr>
-
-        <td
-          colspan="5"
-          style="
-            text-align:center;
-            color:var(--muted);
-            padding:25px
-          "
-        >
+        <td colspan="5" style="text-align:center;color:var(--muted);padding:25px">
           No stock activity yet.
         </td>
-
       </tr>
-
     </tbody>
-
   </table>
 
 </section>
 
-
 </main>
-
 </div>
 
 
-<!-- =========================================
-     NOTIFICATIONS
-========================================= -->
-
-<div
-  class="notification-panel"
-  id="notificationPanel"
-  role="dialog"
-  aria-label="Notifications"
->
-</div>
+<!-- NOTIFICATIONS -->
+<div class="notification-panel" id="notificationPanel" role="dialog" aria-label="Notifications"></div>
 
 
 <script>
 
 /* =========================================================
-   INVENTORY PRO — REAL DASHBOARD
+   INVENTORY PRO — DASHBOARD
 ========================================================= */
 
-const INVENTORY_KEY =
-  "inventory_data";
+const INVENTORY_KEY = "inventory_data";
+const MOVEMENT_KEY  = "inventory_movements";
 
-const MOVEMENT_KEY =
-  "inventory_movements";
+/* ── Shared helpers ── */
 
+const HTML_ESCAPES = {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"};
+const escapeHTML = v => String(v ?? "").replace(/[&<>"']/g, c => HTML_ESCAPES[c]);
+const plural     = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const setText    = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+const isOutbound = type => ["out","sale","debit"].includes(String(type).toLowerCase());
 
-/* =========================================================
-   READ INVENTORY
-========================================================= */
+function readStorage(key, mapper){
+  try{
+    const data = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(data) ? (mapper ? data.map(mapper) : data) : [];
+  }catch(e){
+    console.error("Storage read error:", e);
+    return [];
+  }
+}
 
 function getInventory(){
-
-  try{
-
-    const data =
-      JSON.parse(
-        localStorage.getItem(
-          INVENTORY_KEY
-        ) || "[]"
-      );
-
-    return Array.isArray(data)
-      ? data.map(product => ({
-          ...product,
-          stock:Number(product.stock || 0),
-          min:Number(product.min ?? 10),
-          godown:product.godown || "Main Warehouse",
-          contents:Array.isArray(product.contents)
-            ? product.contents
-            : []
-        }))
-      : [];
-
-  }catch(error){
-
-    console.error(
-      "Inventory read error:",
-      error
-    );
-
-    return [];
-
-  }
-
+  return readStorage(INVENTORY_KEY, p => ({
+    ...p,
+    stock: Number(p.stock || 0),
+    min:   Number(p.min ?? 10),
+    godown: p.godown || "Main Warehouse",
+    contents: Array.isArray(p.contents) ? p.contents : []
+  }));
 }
 
-
-/* =========================================================
-   READ MOVEMENTS
-========================================================= */
-
-function getMovements(){
-
-  try{
-
-    const data =
-      JSON.parse(
-        localStorage.getItem(
-          MOVEMENT_KEY
-        ) || "[]"
-      );
-
-    return Array.isArray(data)
-      ? data
-      : [];
-
-  }catch(error){
-
-    console.error(
-      "Movement read error:",
-      error
-    );
-
-    return [];
-
-  }
-
-}
-
-
-/* =========================================================
-   DAYS LEFT
-========================================================= */
+const getMovements = () => readStorage(MOVEMENT_KEY);
 
 function daysLeft(date){
-
-  if(!date){
-    return Infinity;
-  }
-
-  const expiry =
-    new Date(date);
-
-  if(isNaN(expiry)){
-    return Infinity;
-  }
-
-  const today =
-    new Date();
-
-  today.setHours(
-    0,
-    0,
-    0,
-    0
-  );
-
-  expiry.setHours(
-    0,
-    0,
-    0,
-    0
-  );
-
-  return Math.ceil(
-    (
-      expiry - today
-    ) / 86400000
-  );
-
+  if(!date) return Infinity;
+  const expiry = new Date(date);
+  if(isNaN(expiry)) return Infinity;
+  const today = new Date();
+  [today, expiry].forEach(d => d.setHours(0,0,0,0));
+  return Math.ceil((expiry - today) / 86400000);
 }
 
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(value){
-
-  return String(
-    value ?? ""
-  ).replace(
-    /[&<>"']/g,
-    char => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#39;"
-    }[char])
-  );
-
-}
-
-
-/* =========================================================
-   UPDATE STATS
-========================================================= */
+/* ── Stats ── */
 
 function updateStats(){
+  const inventory = getInventory();
+  const totalStock = inventory.reduce((s, p) => s + p.stock, 0);
+  const lowStock   = inventory.filter(p => p.stock <= p.min);
+  const expiring   = inventory.filter(p => daysLeft(p.expiry) <= 3);
 
-  const inventory =
-    getInventory();
+  setText("totalProducts",   inventory.length);
+  setText("totalStock",      totalStock.toLocaleString());
+  setText("lowStock",        lowStock.length);
+  setText("expiringSoon",    expiring.length);
+  setText("stockTotalLabel", `${totalStock.toLocaleString()} units`);
+  setText("expiryCountLabel",plural(expiring.length, "item"));
+  setText("productStatus",   `${plural(inventory.length, "active inventory record")}`);
 
-  const totalProducts =
-    inventory.length;
-
-  const totalStock =
-    inventory.reduce(
-      (total,product) =>
-        total +
-        Number(product.stock || 0),
-      0
-    );
-
-  const lowStock =
-    inventory.filter(
-      product =>
-        Number(product.stock || 0) <=
-        Number(product.min ?? 10)
-    );
-
-  const expiringSoon =
-    inventory.filter(
-      product =>
-        daysLeft(product.expiry) <= 3
-    );
-
-
-  document.getElementById(
-    "totalProducts"
-  ).textContent =
-    totalProducts;
-
-
-  document.getElementById(
-    "totalStock"
-  ).textContent =
-    totalStock.toLocaleString();
-
-
-  document.getElementById(
-    "lowStock"
-  ).textContent =
-    lowStock.length;
-
-
-  document.getElementById(
-    "expiringSoon"
-  ).textContent =
-    expiringSoon.length;
-
-
-  document.getElementById(
-    "stockTotalLabel"
-  ).textContent =
-    `${totalStock.toLocaleString()} units`;
-
-
-  document.getElementById(
-    "expiryCountLabel"
-  ).textContent =
-    `${expiringSoon.length} item${
-      expiringSoon.length === 1
-        ? ""
-        : "s"
-    }`;
-
-
-  const lowStatus =
-    document.getElementById(
-      "lowStockStatus"
-    );
-
-
-  if(lowStock.length === 0){
-
-    lowStatus.textContent =
-      "✓ Stock levels healthy";
-
-    lowStatus.className =
-      "change";
-
-  }else{
-
-    lowStatus.textContent =
-      "Needs attention";
-
-    lowStatus.className =
-      "change warn";
-
+  const lowEl = document.getElementById("lowStockStatus");
+  if(lowEl){
+    lowEl.textContent = lowStock.length ? "Needs attention" : "✓ Stock levels healthy";
+    lowEl.className   = lowStock.length ? "change warn" : "change";
   }
-
-
-  const productStatus =
-    document.getElementById(
-      "productStatus"
-    );
-
-
-  productStatus.textContent =
-    `${totalProducts} active inventory record${
-      totalProducts === 1
-        ? ""
-        : "s"
-    }`;
-
 }
 
-
-/* =========================================================
-   EXPIRY ALERTS
-========================================================= */
+/* ── Expiry alerts ── */
 
 function renderExpiryAlerts(){
+  const expiring = getInventory()
+    .map(p => ({ p, days: daysLeft(p.expiry) }))
+    .filter(x => x.days <= 3)
+    .sort((a, b) => a.days - b.days);
 
-  const inventory =
-    getInventory();
-
-  const container =
-    document.getElementById(
-      "expiryAlerts"
-    );
-
-
-  const expiring =
-    inventory
-      .map(product => ({
-        product,
-        days:daysLeft(product.expiry)
-      }))
-      .filter(item => item.days <= 3)
-      .sort((a,b) => a.days - b.days);
-
+  const container = document.getElementById("expiryAlerts");
 
   if(!expiring.length){
-
-    container.innerHTML = `
-
-      <div class="alert">
-
-        <i
-          class="dot yellow"
-          style="
-            background:var(--green);
-            box-shadow:0 0 12px #35d39a66
-          "
-        ></i>
-
-        <div>
-
-          <strong>
-            No expiry alerts
-          </strong>
-
-          <small>
-            No products expire within 3 days.
-          </small>
-
-        </div>
-
-      </div>
-
-    `;
-
+    container.innerHTML = `<div class="alert">
+      <i class="dot yellow" style="background:var(--green);box-shadow:0 0 12px #35d39a66"></i>
+      <div><strong>No expiry alerts</strong><small>No products expire within 3 days.</small></div>
+    </div>`;
     return;
-
   }
 
-
-  container.innerHTML =
-    expiring
-      .map(({product,days}) => {
-
-        const expired =
-          days < 0;
-
-        const danger =
-          days <= 1;
-
-
-        return `
-
-          <div class="alert">
-
-            <i
-              class="dot ${
-                danger
-                  ? ""
-                  : "yellow"
-              }"
-            ></i>
-
-            <div>
-
-              <strong>
-                ${escapeHTML(
-                  product.name ||
-                  "Unnamed Product"
-                )}
-              </strong>
-
-              <small>
-                Batch:
-                ${escapeHTML(
-                  product.batch ||
-                  "—"
-                )}
-
-                ·
-
-                ${escapeHTML(
-                  product.expiry ||
-                  "No expiry"
-                )}
-              </small>
-
-            </div>
-
-            <span
-              class="days"
-              style="
-                color:${
-                  expired || danger
-                    ? "var(--red)"
-                    : "var(--yellow)"
-                }
-              "
-            >
-
-              ${
-                days < 0
-                  ? "EXPIRED"
-                  : days === 0
-                    ? "Today"
-                    : `${days} day${
-                        days === 1
-                          ? ""
-                          : "s"
-                      }`
-              }
-
-            </span>
-
-          </div>
-
-        `;
-
-      })
-      .join("");
-
+  container.innerHTML = expiring.map(({p, days}) => {
+    const expired = days < 0, danger = days <= 1;
+    const dayLabel = days < 0 ? "EXPIRED" : days === 0 ? "Today" : plural(days, "day");
+    return `<div class="alert">
+      <i class="dot ${danger ? "" : "yellow"}"></i>
+      <div>
+        <strong>${escapeHTML(p.name || "Unnamed Product")}</strong>
+        <small>Batch: ${escapeHTML(p.batch || "—")} · ${escapeHTML(p.expiry || "No expiry")}</small>
+      </div>
+      <span class="days" style="color:${expired || danger ? "var(--red)" : "var(--yellow)"}">${dayLabel}</span>
+    </div>`;
+  }).join("");
 }
 
-
-/* =========================================================
-   STOCK CHART
-========================================================= */
+/* ── Stock chart ── */
 
 function renderStockChart(){
-
-  const inventory =
-    getInventory();
-
-  const chart =
-    document.getElementById(
-      "stockChart"
-    );
-
+  const inventory = getInventory();
+  const chart = document.getElementById("stockChart");
 
   if(!inventory.length){
-
-    chart.innerHTML = `
-
-      <div
-        class="empty-dashboard"
-        style="
-          width:100%;
-          text-align:center;
-          color:var(--muted);
-          padding:50px 10px
-        "
-      >
-        No inventory available.
-      </div>
-
-    `;
-
+    chart.innerHTML = `<div class="empty-dashboard" style="width:100%;text-align:center;color:var(--muted);padding:50px 10px">No inventory available.</div>`;
     return;
-
   }
 
+  const sorted = [...inventory].sort((a, b) => b.stock - a.stock);
+  const max = Math.max(...sorted.map(i => i.stock), 1);
 
-  const items =
-    [...inventory].sort(
-      (a,b) =>
-        Number(b.stock || 0) -
-        Number(a.stock || 0)
-    );
-
-
-  const max =
-    Math.max(
-      ...items.map(
-        item =>
-          Number(item.stock || 0)
-      ),
-      1
-    );
-
-
-  chart.innerHTML =
-    items
-      .map(item => {
-
-        const stock =
-          Number(item.stock || 0);
-
-        const height =
-          Math.max(
-            8,
-            (stock / max) * 100
-          );
-
-        const productName =
-          item.name ||
-          "Product";
-
-
-        return `
-
-          <div
-            class="bar"
-            data-label="${escapeHTML(
-              productName
-            )}"
-            style="
-              height:${height}%
-            "
-            title="${escapeHTML(
-              productName
-            )}: ${stock} units"
-          ></div>
-
-        `;
-
-      })
-      .join("");
-
+  chart.innerHTML = sorted.map(item => {
+    const h = Math.max(8, (item.stock / max) * 100);
+    const name = escapeHTML(item.name || "Product");
+    return `<div class="bar" data-label="${name}" style="height:${h}%" title="${name}: ${item.stock} units"></div>`;
+  }).join("");
 }
 
-
-/* =========================================================
-   RECENT ACTIVITIES
-========================================================= */
+/* ── Recent activities ── */
 
 function renderActivities(){
+  const recent = [...getMovements()].reverse().slice(0, 8);
+  const table  = document.getElementById("activityTable");
 
-  const movements =
-    getMovements();
-
-  const table =
-    document.getElementById(
-      "activityTable"
-    );
-
-
-  const recent =
-    [...movements]
-      .reverse()
-      .slice(0,8);
-
-
-  document.getElementById(
-    "activityCount"
-  ).textContent =
-    `${recent.length} activit${
-      recent.length === 1
-        ? "y"
-        : "ies"
-    }`;
-
+  setText("activityCount", `${recent.length} activit${recent.length === 1 ? "y" : "ies"}`);
 
   if(!recent.length){
-
-    table.innerHTML = `
-
-      <tr>
-
-        <td
-          colspan="5"
-          style="
-            text-align:center;
-            color:var(--muted);
-            padding:25px
-          "
-        >
-          No stock activity yet.
-        </td>
-
-      </tr>
-
-    `;
-
+    table.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:25px">No stock activity yet.</td></tr>`;
     return;
-
   }
 
-
-  table.innerHTML =
-    recent
-      .map(movement => {
-
-        const rawType =
-          String(
-            movement.type || ""
-          ).toLowerCase();
-
-        const isOut =
-          rawType === "out" ||
-          rawType === "sale" ||
-          rawType === "debit";
-
-
-        const quantity =
-          Number(
-            movement.qty ??
-            movement.quantity ??
-            0
-          );
-
-
-        return `
-
-          <tr>
-
-            <td>
-              ${escapeHTML(
-                movement.name ||
-                "Unknown Product"
-              )}
-            </td>
-
-            <td>
-              ${
-                isOut
-                  ? "Sale"
-                  : "Stock In"
-              }
-            </td>
-
-            <td
-              style="
-                color:${
-                  isOut
-                    ? "var(--red)"
-                    : "var(--green)"
-                };
-                font-weight:650
-              "
-            >
-              ${
-                isOut
-                  ? "-"
-                  : "+"
-              }${quantity}
-            </td>
-
-            <td>
-              ${escapeHTML(
-                movement.source ||
-                "Inventory"
-              )}
-            </td>
-
-            <td>
-
-              <span
-                class="badge ${
-                  isOut
-                    ? ""
-                    : "yellow"
-                }"
-              >
-                ${
-                  isOut
-                    ? "Sold"
-                    : "Added"
-                }
-              </span>
-
-            </td>
-
-          </tr>
-
-        `;
-
-      })
-      .join("");
-
+  table.innerHTML = recent.map(m => {
+    const out = isOutbound(m.type);
+    const qty = Number(m.qty ?? m.quantity ?? 0);
+    return `<tr>
+      <td>${escapeHTML(m.name || "Unknown Product")}</td>
+      <td>${out ? "Sale" : "Stock In"}</td>
+      <td style="color:${out ? "var(--red)" : "var(--green)"};font-weight:650">${out ? "-" : "+"}${qty}</td>
+      <td>${escapeHTML(m.source || "Inventory")}</td>
+      <td><span class="badge ${out ? "" : "yellow"}">${out ? "Sold" : "Added"}</span></td>
+    </tr>`;
+  }).join("");
 }
 
+/* ── Theme ── */
 
-/* =========================================================
-   THEME
-========================================================= */
-
-const themeBtn =
-  document.getElementById(
-    "themeBtn"
-  );
-
-
-const savedTheme =
-  localStorage.getItem(
-    "inventory_theme"
-  );
-
-
-if(savedTheme === "light"){
-
-  document.body.classList.add(
-    "light"
-  );
-
-  themeBtn.textContent =
-    "☀";
-
+const themeBtn = document.getElementById("themeBtn");
+if(localStorage.getItem("inventory_theme") === "light"){
+  document.body.classList.add("light");
+  themeBtn.textContent = "☀";
 }
-
-
 themeBtn.onclick = () => {
-
-  document.body.classList.toggle(
-    "light"
-  );
-
-
-  const light =
-    document.body.classList.contains(
-      "light"
-    );
-
-
-  localStorage.setItem(
-    "inventory_theme",
-    light
-      ? "light"
-      : "dark"
-  );
-
-
-  themeBtn.textContent =
-    light
-      ? "☀"
-      : "☾";
-
+  const light = document.body.classList.toggle("light");
+  localStorage.setItem("inventory_theme", light ? "light" : "dark");
+  themeBtn.textContent = light ? "☀" : "☾";
 };
 
-
-/* =========================================================
-   DATE + GREETING
-========================================================= */
+/* ── Date / greeting ── */
 
 function updateDashboardHeader(){
-
-  const now =
-    new Date();
-
-  const dateElement =
-    document.getElementById(
-      "dashboardDate"
-    );
-
-  const greetingElement =
-    document.getElementById(
-      "dashboardGreeting"
-    );
-
-
-  if(
-    !dateElement ||
-    !greetingElement
-  ){
-    return;
-  }
-
-
-  dateElement.textContent =
-    now.toLocaleDateString(
-      "en-IN",
-      {
-        weekday:"long",
-        day:"2-digit",
-        month:"long",
-        year:"numeric"
-      }
-    );
-
-
-  const hour =
-    now.getHours();
-
-
-  const greeting =
-    hour < 12
-      ? "Good morning"
-      : hour < 17
-        ? "Good afternoon"
-        : "Good evening";
-
-
-  greetingElement.textContent =
-    `${greeting}, Admin`;
-
+  const now = new Date();
+  setText("dashboardDate", now.toLocaleDateString("en-IN", {weekday:"long",day:"2-digit",month:"long",year:"numeric"}));
+  const hour = now.getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  setText("dashboardGreeting", `${greeting}, Admin`);
 }
 
+/* ── Notifications ── */
 
-/* =========================================================
-   NOTIFICATIONS
-========================================================= */
-
-const notificationBtn =
-  document.getElementById(
-    "notificationBtn"
-  );
-
-const notificationPanel =
-  document.getElementById(
-    "notificationPanel"
-  );
-
+const notificationBtn   = document.getElementById("notificationBtn");
+const notificationPanel = document.getElementById("notificationPanel");
+const DOT_CLASS = { danger:"", warning:"warning", success:"success" };
 
 function renderNotifications(){
+  const inventory  = getInventory();
+  const movements  = getMovements();
+  const notes = [];
 
-  const inventory =
-    getInventory();
-
-  const movements =
-    getMovements();
-
-  const notifications = [];
-
-
-  inventory.forEach(product => {
-
-    const days =
-      daysLeft(
-        product.expiry
-      );
-
-
+  inventory.forEach(p => {
+    const days = daysLeft(p.expiry);
+    const name = p.name || "Product";
     if(days < 0){
-
-      notifications.push({
-
-        type:"danger",
-
-        title:"Expired Product",
-
-        text:
-          `${product.name || "Product"} is expired.`
-
-      });
-
+      notes.push({ type:"danger",  title:"Expired Product",   text:`${name} is expired.` });
+    } else if(days <= 3){
+      const when = days === 0 ? "today" : `in ${plural(days, "day")}`;
+      notes.push({ type:"warning", title:"Expiry Attention",  text:`${name} expires ${when}.` });
     }
-    else if(days <= 3){
-
-      notifications.push({
-
-        type:"warning",
-
-        title:"Expiry Attention",
-
-        text:
-          `${product.name || "Product"} expires ${
-            days === 0
-              ? "today"
-              : `in ${days} day${days === 1 ? "" : "s"}`
-          }.`
-
-      });
-
+    if(p.stock <= p.min){
+      notes.push({ type:"warning", title:"Low Stock", text:`${name} has only ${plural(p.stock, "unit")} remaining.` });
     }
-
   });
-
-
-  inventory.forEach(product => {
-
-    const stock =
-      Number(
-        product.stock || 0
-      );
-
-    const minimum =
-      Number(
-        product.min ?? 10
-      );
-
-
-    if(stock <= minimum){
-
-      notifications.push({
-
-        type:"warning",
-
-        title:"Low Stock",
-
-        text:
-          `${product.name || "Product"} has only ${stock} unit${
-            stock === 1
-              ? ""
-              : "s"
-          } remaining.`
-
-      });
-
-    }
-
-  });
-
 
   if(movements.length){
-
-    const recent =
-      movements[movements.length - 1];
-
-
-    const type =
-      String(
-        recent.type || ""
-      ).toLowerCase();
-
-
-    notifications.push({
-
-      type:"success",
-
-      title:"Latest Stock Activity",
-
-      text:
-        `${recent.name || "Product"} — ${
-          type === "out" ||
-          type === "sale" ||
-          type === "debit"
-            ? "Stock Out"
-            : "Stock In"
-        } ${Number(
-          recent.qty ??
-          recent.quantity ??
-          0
-        )} unit(s).`
-
-    });
-
+    const m    = movements[movements.length - 1];
+    const dir  = isOutbound(m.type) ? "Stock Out" : "Stock In";
+    const qty  = Number(m.qty ?? m.quantity ?? 0);
+    notes.push({ type:"success", title:"Latest Stock Activity", text:`${m.name || "Product"} — ${dir} ${qty} unit(s).` });
   }
 
-
-  const visible =
-    notifications.slice(0,8);
-
+  const visible = notes.slice(0, 8);
+  const items = visible.length
+    ? visible.map(n => `<div class="notification-item">
+        <span class="notification-dot ${DOT_CLASS[n.type] ?? ""}"></span>
+        <div><strong>${escapeHTML(n.title)}</strong><small>${escapeHTML(n.text)}</small></div>
+      </div>`).join("")
+    : `<div class="notification-empty">No notifications.</div>`;
 
   notificationPanel.innerHTML = `
-
     <div class="notification-head">
-
-      <strong>
-        Notifications
-      </strong>
-
-      <span class="notification-count">
-        ${visible.length}
-        alert${visible.length === 1 ? "" : "s"}
-      </span>
-
-    </div>
-
-
-    ${
-      visible.length
-
-        ? visible.map(item => `
-
-            <div class="notification-item">
-
-              <span
-                class="notification-dot ${
-                  item.type === "warning"
-                    ? "warning"
-                    : item.type === "success"
-                      ? "success"
-                      : ""
-                }"
-              ></span>
-
-              <div>
-
-                <strong>
-                  ${escapeHTML(
-                    item.title
-                  )}
-                </strong>
-
-                <small>
-                  ${escapeHTML(
-                    item.text
-                  )}
-                </small>
-
-              </div>
-
-            </div>
-
-          `).join("")
-
-        : `
-
-            <div class="notification-empty">
-              No notifications.
-            </div>
-
-          `
-    }
-
-  `;
-
+      <strong>Notifications</strong>
+      <span class="notification-count">${plural(visible.length, "alert")}</span>
+    </div>${items}`;
 }
 
+notificationBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  renderNotifications();
+  notificationPanel.classList.toggle("open");
+});
 
-notificationBtn.addEventListener(
-  "click",
-  event => {
+document.addEventListener("click", e => {
+  if(!notificationPanel.contains(e.target) && e.target !== notificationBtn)
+    notificationPanel.classList.remove("open");
+});
 
-    event.stopPropagation();
-
-    renderNotifications();
-
-    notificationPanel.classList.toggle(
-      "open"
-    );
-
-  }
-);
-
-
-document.addEventListener(
-  "click",
-  event => {
-
-    if(
-      !notificationPanel.contains(
-        event.target
-      ) &&
-      event.target !==
-        notificationBtn
-    ){
-
-      notificationPanel.classList.remove(
-        "open"
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   REFRESH
-========================================================= */
+/* ── Refresh ── */
 
 function refreshDashboard(){
-
   updateStats();
-
   renderExpiryAlerts();
-
   renderStockChart();
-
   renderActivities();
-
   updateDashboardHeader();
-
-  if(
-    notificationPanel.classList.contains(
-      "open"
-    )
-  ){
-
-    renderNotifications();
-
-  }
-
+  if(notificationPanel.classList.contains("open")) renderNotifications();
 }
 
-
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
-
 refreshDashboard();
+window.addEventListener("storage", e => { if(e.key === INVENTORY_KEY || e.key === MOVEMENT_KEY) refreshDashboard(); });
+document.addEventListener("visibilitychange", () => { if(!document.hidden) refreshDashboard(); });
+setInterval(refreshDashboard, 5000);
 
+const logoutBtn = document.getElementById("logoutBtn");
 
-/* =========================================================
-   LIVE SYNCHRONIZATION
-========================================================= */
-
-window.addEventListener(
-  "storage",
-  event => {
-
-    if(
-      event.key === INVENTORY_KEY ||
-      event.key === MOVEMENT_KEY
-    ){
-
-      refreshDashboard();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   REFRESH WHEN TAB ACTIVE
-========================================================= */
-
-document.addEventListener(
-  "visibilitychange",
-  () => {
-
-    if(!document.hidden){
-
-      refreshDashboard();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   PERIODIC REFRESH
-========================================================= */
-
-setInterval(
-  refreshDashboard,
-  5000
-);
-
+if(logoutBtn){
+  logoutBtn.addEventListener("click", () => {
+    localStorage.removeItem("inventory_user");
+    window.location.href = "login.html";
+  });
+}
 </script>
 
-
 <script src="excel.js"></script>
-
 </body>
 </html>
