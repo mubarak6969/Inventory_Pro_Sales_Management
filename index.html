@@ -1,0 +1,3085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard | Inventory Pro</title>
+
+<style>
+
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0
+}
+
+:root{
+ --bg:#06070b;
+ --bg2:#0b0d14;
+ --surface:rgba(255,255,255,.065);
+ --surface2:rgba(255,255,255,.035);
+ --surface3:rgba(255,255,255,.085);
+ --border:rgba(255,255,255,.115);
+ --border-soft:rgba(255,255,255,.07);
+ --text:#f7f8ff;
+ --muted:#9298a8;
+ --accent:#7c5cff;
+ --accent2:#4f8cff;
+ --green:#35d39a;
+ --yellow:#f4c95d;
+ --red:#ff667d;
+ --shadow:0 24px 70px rgba(0,0,0,.34);
+ --shadow-soft:0 12px 35px rgba(0,0,0,.18);
+ --blur:26px;
+ --radius:20px;
+ --transition:all .32s cubic-bezier(.22,1,.36,1)
+}
+
+body.light{
+ --bg:#edf0f7;
+ --bg2:#f6f7fb;
+ --surface:rgba(255,255,255,.66);
+ --surface2:rgba(255,255,255,.42);
+ --surface3:rgba(255,255,255,.78);
+ --border:rgba(30,35,60,.105);
+ --border-soft:rgba(30,35,60,.065);
+ --text:#171923;
+ --muted:#687080;
+ --shadow:0 22px 60px rgba(40,45,70,.13);
+ --shadow-soft:0 12px 32px rgba(40,45,70,.08)
+}
+
+html{
+ scroll-behavior:smooth
+}
+
+body{
+ min-height:100vh;
+ background:
+  radial-gradient(circle at 7% 4%,rgba(108,76,255,.20),transparent 25%),
+  radial-gradient(circle at 96% 18%,rgba(79,140,255,.12),transparent 25%),
+  radial-gradient(circle at 75% 100%,rgba(0,212,255,.10),transparent 30%),
+  linear-gradient(135deg,var(--bg),var(--bg2));
+ color:var(--text);
+ font-family:Inter,Segoe UI,Arial,sans-serif;
+ transition:background .55s ease,color .4s ease;
+ overflow-x:hidden
+}
+
+body:before{
+ content:"";
+ position:fixed;
+ width:480px;
+ height:480px;
+ border-radius:50%;
+ background:radial-gradient(circle,#7658ff2c 0%,#7658ff0c 38%,transparent 70%);
+ filter:blur(65px);
+ top:-220px;
+ right:-100px;
+ pointer-events:none;
+ z-index:-1;
+ animation:ambientFloat 9s ease-in-out infinite alternate
+}
+
+body:after{
+ content:"";
+ position:fixed;
+ width:420px;
+ height:420px;
+ border-radius:50%;
+ background:radial-gradient(circle,#00cfff18 0%,transparent 70%);
+ filter:blur(75px);
+ bottom:-220px;
+ left:35%;
+ pointer-events:none;
+ z-index:-1;
+ animation:ambientFloat 11s ease-in-out infinite alternate-reverse
+}
+
+button{
+ font:inherit
+}
+
+.app{
+ display:flex;
+ min-height:100vh
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar{
+ width:245px;
+ position:fixed;
+ inset:0 auto 0 0;
+ padding:22px 14px;
+ border-right:1px solid var(--border);
+ background:
+  linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),
+  rgba(8,9,15,.52);
+ backdrop-filter:blur(30px) saturate(145%);
+ -webkit-backdrop-filter:blur(30px) saturate(145%);
+ box-shadow:12px 0 45px rgba(0,0,0,.12);
+ z-index:20;
+ overflow:hidden
+}
+
+.sidebar:before{
+ content:"";
+ position:absolute;
+ width:180px;
+ height:180px;
+ background:#795cff18;
+ filter:blur(55px);
+ border-radius:50%;
+ top:-80px;
+ left:-70px;
+ pointer-events:none
+}
+
+.sidebar:after{
+ content:"";
+ position:absolute;
+ top:0;
+ right:0;
+ width:1px;
+ height:100%;
+ background:linear-gradient(180deg,transparent,#927dff55,transparent);
+ opacity:.6;
+ pointer-events:none
+}
+
+.light .sidebar{
+ background:
+  linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.47)),
+  rgba(255,255,255,.52)
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:5px 10px 28px;
+ position:relative;
+ z-index:1
+}
+
+.logo{
+ width:39px;
+ height:39px;
+ border-radius:13px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,#a18cff,#6248e9);
+ color:white;
+ font-weight:900;
+ box-shadow:
+  0 10px 28px #7658ff45,
+  inset 0 1px 1px rgba(255,255,255,.4);
+ border:1px solid rgba(255,255,255,.2);
+ transition:var(--transition);
+ cursor:default
+}
+
+.logo:hover{
+ transform:scale(1.10) rotate(-3deg);
+ box-shadow:
+  0 15px 38px rgba(118,88,255,.38),
+  0 0 22px rgba(124,92,255,.18),
+  inset 0 1px 1px rgba(255,255,255,.4)
+}
+
+.brand strong{
+ font-size:16px;
+ letter-spacing:-.25px
+}
+
+.brand small{
+ display:block;
+ color:var(--muted);
+ font-size:10px;
+ margin-top:3px;
+ letter-spacing:.25px
+}
+
+.nav-title{
+ font-size:10px;
+ text-transform:uppercase;
+ color:#686f80;
+ letter-spacing:1.4px;
+ padding:0 12px 9px;
+ font-weight:600
+}
+
+nav{
+ position:relative;
+ z-index:1
+}
+
+nav a{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ color:var(--muted);
+ text-decoration:none;
+ padding:11px 12px;
+ border-radius:13px;
+ margin:3px 0;
+ font-size:13px;
+ border:1px solid transparent;
+ transition:var(--transition);
+ position:relative;
+ overflow:hidden;
+ will-change:transform,background,box-shadow
+}
+
+nav a:before{
+ content:"";
+ position:absolute;
+ inset:0;
+ background:linear-gradient(
+  90deg,
+  rgba(124,92,255,.14),
+  rgba(79,140,255,.04),
+  transparent
+ );
+ opacity:0;
+ transition:opacity .3s ease
+}
+
+nav a:hover{
+ transform:translate3d(5px,0,0) scale(1.025);
+ color:var(--text);
+ background:
+  linear-gradient(
+   100deg,
+   rgba(124,92,255,.16),
+   rgba(79,140,255,.055),
+   rgba(255,255,255,.025)
+  );
+ border-color:rgba(139,118,255,.25);
+ box-shadow:
+  0 8px 24px rgba(0,0,0,.14),
+  0 0 18px rgba(124,92,255,.07);
+ backdrop-filter:blur(18px)
+}
+
+nav a:hover:before{
+ opacity:1
+}
+
+nav a.active{
+ color:white;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.25),
+   rgba(79,140,255,.10)
+  );
+ border:1px solid rgba(139,118,255,.28);
+ box-shadow:
+  0 8px 28px rgba(90,70,220,.16),
+  inset 0 1px 0 rgba(255,255,255,.09)
+}
+
+nav a.active:after{
+ content:"";
+ position:absolute;
+ left:0;
+ top:25%;
+ width:3px;
+ height:50%;
+ border-radius:0 4px 4px 0;
+ background:linear-gradient(180deg,#a998ff,#628cff);
+ box-shadow:0 0 12px #8168ff
+}
+
+nav a.active:hover{
+ transform:translate3d(5px,0,0) scale(1.025);
+ border-color:rgba(155,135,255,.42);
+ box-shadow:
+  0 10px 30px rgba(90,70,220,.23),
+  0 0 22px rgba(124,92,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.12)
+}
+
+nav a span:first-child{
+ font-size:16px;
+ width:20px;
+ text-align:center;
+ position:relative;
+ z-index:1;
+ transition:transform .3s ease
+}
+
+nav a span:last-child{
+ position:relative;
+ z-index:1
+}
+
+nav a:hover span:first-child{
+ transform:scale(1.18);
+ text-shadow:0 0 12px rgba(155,137,255,.55)
+}
+
+.sidebar-bottom{
+ position:absolute;
+ bottom:18px;
+ left:14px;
+ right:14px;
+ z-index:2
+}
+
+.user{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:11px;
+ border:1px solid var(--border);
+ background:
+  linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.025)),
+  var(--surface);
+ border-radius:15px;
+ box-shadow:var(--shadow-soft);
+ backdrop-filter:blur(18px);
+ transition:var(--transition);
+ will-change:transform,box-shadow
+}
+
+.user:hover{
+ transform:translate3d(0,-3px,0) scale(1.025);
+ border-color:rgba(151,132,255,.32);
+ box-shadow:
+  0 15px 35px rgba(0,0,0,.20),
+  0 0 20px rgba(124,92,255,.08),
+  inset 0 1px 0 rgba(255,255,255,.10)
+}
+
+.avatar{
+ width:32px;
+ height:32px;
+ border-radius:10px;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.28),
+   rgba(79,140,255,.12)
+  );
+ display:grid;
+ place-items:center;
+ font-size:12px;
+ font-weight:700;
+ border:1px solid rgba(145,125,255,.18);
+ box-shadow:inset 0 1px 1px rgba(255,255,255,.1)
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+main{
+ margin-left:245px;
+ width:calc(100% - 245px);
+ padding:25px 30px 40px;
+ position:relative
+}
+
+main:before{
+ content:"";
+ position:absolute;
+ width:300px;
+ height:300px;
+ background:#7256ff10;
+ filter:blur(100px);
+ top:100px;
+ right:8%;
+ border-radius:50%;
+ pointer-events:none
+}
+
+.topbar{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:28px;
+ position:relative;
+ z-index:100
+}
+
+.eyebrow{
+ color:var(--muted);
+ font-size:12px;
+ margin-bottom:6px;
+ letter-spacing:.15px
+}
+
+h1{
+ font-size:27px;
+ letter-spacing:-.9px;
+ line-height:1.15;
+ font-weight:750
+}
+
+.actions{
+ display:flex;
+ align-items:center;
+ gap:9px
+}
+
+.icon-btn{
+ width:40px;
+ height:40px;
+ border:1px solid var(--border);
+ border-radius:13px;
+ background:
+  linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.035)),
+  var(--surface);
+ color:var(--text);
+ cursor:pointer;
+ backdrop-filter:blur(18px);
+ -webkit-backdrop-filter:blur(18px);
+ box-shadow:
+  inset 0 1px 0 rgba(255,255,255,.07),
+  0 7px 20px rgba(0,0,0,.10);
+ transition:var(--transition);
+ position:relative;
+ overflow:hidden;
+ will-change:transform,box-shadow,border-color
+}
+
+.icon-btn:before{
+ content:"";
+ position:absolute;
+ inset:-50%;
+ background:
+  linear-gradient(
+   110deg,
+   transparent 35%,
+   rgba(255,255,255,.12),
+   transparent 65%
+  );
+ transform:translateX(-100%);
+ transition:transform .6s ease
+}
+
+.icon-btn:hover{
+ transform:translate3d(0,-4px,0) scale(1.08);
+ border-color:rgba(151,132,255,.48);
+ box-shadow:
+  0 12px 30px rgba(0,0,0,.22),
+  0 0 22px rgba(124,92,255,.16),
+  inset 0 1px 0 rgba(255,255,255,.12)
+}
+
+.icon-btn:hover:before{
+ transform:translateX(100%)
+}
+
+.icon-btn:active{
+ transform:translate3d(0,0,0) scale(.94)
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:14px;
+ position:relative;
+ z-index:1
+}
+
+.card{
+ border:1px solid var(--border);
+ background:
+  linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025)),
+  var(--surface);
+ backdrop-filter:blur(var(--blur)) saturate(135%);
+ -webkit-backdrop-filter:blur(var(--blur)) saturate(135%);
+ border-radius:var(--radius);
+ box-shadow:
+  var(--shadow),
+  inset 0 1px 0 rgba(255,255,255,.055);
+ transition:var(--transition);
+ position:relative;
+ overflow:hidden;
+ transform:translate3d(0,0,0);
+ will-change:transform,box-shadow,border-color
+}
+
+.card:before{
+ content:"";
+ position:absolute;
+ inset:0;
+ border-radius:inherit;
+ background:
+  linear-gradient(
+   115deg,
+   transparent 25%,
+   rgba(255,255,255,.08) 45%,
+   rgba(255,255,255,.02) 55%,
+   transparent 75%
+  );
+ background-size:250% 100%;
+ background-position:200% 0;
+ pointer-events:none;
+ transition:background-position .7s cubic-bezier(.22,1,.36,1);
+ z-index:0
+}
+
+.card:after{
+ content:"";
+ position:absolute;
+ width:120px;
+ height:120px;
+ border-radius:50%;
+ background:#8b75ff10;
+ filter:blur(35px);
+ top:-65px;
+ right:-55px;
+ pointer-events:none;
+ opacity:0;
+ transition:opacity .4s ease
+}
+
+.card:hover{
+ transform:translate3d(0,-7px,0) scale(1.012);
+ border-color:rgba(151,132,255,.42);
+ box-shadow:
+  0 30px 80px rgba(0,0,0,.38),
+  0 0 0 1px rgba(124,92,255,.06),
+  0 0 35px rgba(124,92,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.12)
+}
+
+.card:hover:before{
+ background-position:-50% 0
+}
+
+.card:hover:after{
+ opacity:1
+}
+
+.stat{
+ padding:19px;
+ cursor:default
+}
+
+.stat:hover{
+ transform:translate3d(0,-8px,0) scale(1.018)
+}
+
+.stat-top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center
+}
+
+.stat-label{
+ font-size:12px;
+ color:var(--muted);
+ letter-spacing:.1px
+}
+
+.stat-icon{
+ width:35px;
+ height:35px;
+ border-radius:11px;
+ display:grid;
+ place-items:center;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.20),
+   rgba(79,140,255,.07)
+  );
+ border:1px solid rgba(139,118,255,.12);
+ color:#a899ff;
+ box-shadow:
+  inset 0 1px 1px rgba(255,255,255,.08),
+  0 5px 15px rgba(70,50,170,.10);
+ transition:var(--transition);
+ will-change:transform,box-shadow
+}
+
+.stat:hover .stat-icon{
+ transform:scale(1.14) rotate(-3deg);
+ border-color:rgba(151,132,255,.38);
+ box-shadow:
+  0 8px 24px rgba(98,72,220,.28),
+  0 0 18px rgba(124,92,255,.18),
+  inset 0 1px 1px rgba(255,255,255,.18)
+}
+
+.value{
+ font-size:25px;
+ font-weight:750;
+ margin-top:16px;
+ letter-spacing:-.7px;
+ line-height:1;
+ transition:
+  transform .35s cubic-bezier(.22,1,.36,1),
+  text-shadow .35s ease
+}
+
+.stat:hover .value{
+ transform:translateX(2px);
+ text-shadow:0 0 18px rgba(124,92,255,.18)
+}
+
+.change{
+ font-size:10px;
+ margin-top:9px;
+ color:var(--green);
+ display:inline-flex;
+ align-items:center;
+ gap:3px;
+ padding:4px 7px;
+ border-radius:7px;
+ background:rgba(53,211,154,.055);
+ border:1px solid rgba(53,211,154,.08)
+}
+
+.change.warn{
+ color:var(--yellow);
+ background:rgba(244,201,93,.055);
+ border-color:rgba(244,201,93,.08)
+}
+
+.change.danger{
+ color:var(--red);
+ background:rgba(255,102,125,.055);
+ border-color:rgba(255,102,125,.08)
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.content{
+ display:grid;
+ grid-template-columns:1.6fr 1fr;
+ gap:14px;
+ margin-top:14px;
+ position:relative;
+ z-index:1
+}
+
+.panel{
+ padding:20px
+}
+
+.panel-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:20px
+}
+
+.panel-head h2{
+ font-size:14px;
+ font-weight:700;
+ letter-spacing:-.15px;
+ margin-bottom:3px
+}
+
+.panel-head span{
+ font-size:11px;
+ color:var(--muted)
+}
+
+
+/* =========================================
+   CHART
+========================================= */
+
+.chart{
+ height:235px;
+ display:flex;
+ align-items:end;
+ gap:10px;
+ padding:15px 5px 28px;
+ position:relative;
+ overflow-x:auto;
+ overflow-y:hidden;
+ scrollbar-width:thin;
+ scrollbar-color:rgba(124,92,255,.45) transparent
+}
+
+.chart::-webkit-scrollbar{
+ height:5px
+}
+
+.chart::-webkit-scrollbar-track{
+ background:transparent
+}
+
+.chart::-webkit-scrollbar-thumb{
+ background:rgba(124,92,255,.35);
+ border-radius:10px
+}
+
+.chart:before{
+ content:"";
+ position:absolute;
+ left:5px;
+ right:5px;
+ bottom:53px;
+ height:1px;
+ background:var(--border-soft);
+ box-shadow:
+  0 -48px 0 var(--border-soft),
+  0 -96px 0 var(--border-soft),
+  0 -144px 0 var(--border-soft);
+ pointer-events:none
+}
+
+.bar{
+ flex:0 0 58px;
+ width:58px;
+ min-width:58px;
+ border-radius:8px 8px 4px 4px;
+ background:
+  linear-gradient(
+   180deg,
+   #9c89ff 0%,
+   #7159f0 45%,
+   #4f3ac8 100%
+  );
+ opacity:.82;
+ transition:var(--transition);
+ position:relative;
+ box-shadow:
+  0 7px 20px rgba(89,66,220,.18),
+  inset 1px 0 rgba(255,255,255,.12);
+ z-index:1;
+ transform-origin:center bottom;
+ will-change:transform,filter,opacity,box-shadow
+}
+
+.bar:before{
+ content:"";
+ position:absolute;
+ top:0;
+ left:15%;
+ right:15%;
+ height:2px;
+ border-radius:10px;
+ background:rgba(255,255,255,.45);
+ filter:blur(.3px)
+}
+
+.bar:hover{
+ opacity:1;
+ transform:scaleY(1.07) scaleX(1.08);
+ filter:
+  brightness(1.18)
+  saturate(1.15);
+ box-shadow:
+  0 12px 30px rgba(105,78,235,.34),
+  0 0 20px rgba(124,92,255,.20),
+  inset 1px 0 rgba(255,255,255,.20)
+}
+
+.bar:after{
+ content:attr(data-label);
+ position:absolute;
+ left:50%;
+ bottom:-21px;
+ transform:translateX(-50%);
+ width:58px;
+ text-align:center;
+ color:var(--muted);
+ font-size:8px;
+ font-weight:500;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ padding:0 3px;
+ pointer-events:none
+}
+
+
+/* =========================================
+   ALERTS
+========================================= */
+
+.alert-list{
+ display:grid;
+ gap:9px
+}
+
+.alert{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:11px;
+ border-radius:13px;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.055),
+   rgba(255,255,255,.018)
+  ),
+  var(--surface2);
+ border:1px solid var(--border-soft);
+ transition:var(--transition);
+ position:relative;
+ overflow:hidden;
+ will-change:transform,box-shadow,border-color
+}
+
+.alert:before{
+ content:"";
+ position:absolute;
+ inset:0;
+ background:
+  linear-gradient(
+   90deg,
+   rgba(255,255,255,.04),
+   transparent
+  );
+ opacity:0;
+ transition:opacity .3s ease
+}
+
+.alert:hover{
+ transform:translate3d(4px,-2px,0) scale(1.018);
+ border-color:rgba(151,132,255,.28);
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.075),
+   rgba(255,255,255,.025)
+  ),
+  var(--surface2);
+ box-shadow:
+  0 10px 28px rgba(0,0,0,.16),
+  0 0 18px rgba(124,92,255,.07),
+  inset 0 1px 0 rgba(255,255,255,.08)
+}
+
+.alert:hover:before{
+ opacity:1
+}
+
+.dot{
+ width:8px;
+ height:8px;
+ min-width:8px;
+ border-radius:50%;
+ background:var(--red);
+ box-shadow:
+  0 0 12px #ff667d88,
+  0 0 22px #ff667d33;
+ animation:pulseRed 2.2s ease-in-out infinite;
+ transition:transform .3s ease
+}
+
+.alert:hover .dot{
+ transform:scale(1.35);
+ box-shadow:
+  0 0 16px #ff667daa,
+  0 0 28px #ff667d44
+}
+
+.dot.yellow{
+ background:var(--yellow);
+ box-shadow:
+  0 0 12px #f4c95d66,
+  0 0 22px #f4c95d22;
+ animation:pulseYellow 2.2s ease-in-out infinite
+}
+
+.alert strong{
+ font-size:12px;
+ display:block;
+ margin-bottom:2px
+}
+
+.alert small{
+ font-size:10px;
+ color:var(--muted)
+}
+
+.days{
+ margin-left:auto;
+ font-size:10px;
+ color:var(--red);
+ font-weight:600;
+ white-space:nowrap
+}
+
+
+/* =========================================
+   TABLE
+========================================= */
+
+.table-panel{
+ margin-top:14px;
+ padding:20px;
+ position:relative;
+ z-index:1
+}
+
+table{
+ width:100%;
+ border-collapse:separate;
+ border-spacing:0
+}
+
+th{
+ text-align:left;
+ color:var(--muted);
+ font-size:10px;
+ font-weight:600;
+ padding:10px 8px;
+ border-bottom:1px solid var(--border);
+ letter-spacing:.2px;
+ text-transform:uppercase
+}
+
+td{
+ font-size:11px;
+ padding:14px 8px;
+ border-bottom:1px solid var(--border-soft);
+ transition:
+  background .25s ease,
+  color .25s ease
+}
+
+tbody tr{
+ transition:
+  transform .25s cubic-bezier(.22,1,.36,1),
+  background .25s ease
+}
+
+tbody tr:hover{
+ transform:translateX(3px)
+}
+
+tbody tr:hover td{
+ background:
+  linear-gradient(
+   90deg,
+   rgba(124,92,255,.055),
+   rgba(124,92,255,.018),
+   transparent
+  )
+}
+
+tbody tr:hover td:first-child{
+ color:#a99aff
+}
+
+tbody tr:last-child td{
+ border-bottom:none
+}
+
+td:last-child{
+ text-align:right
+}
+
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:8px;
+ font-size:9px;
+ font-weight:600;
+ background:rgba(53,211,154,.09);
+ color:var(--green);
+ border:1px solid rgba(53,211,154,.10);
+ box-shadow:0 0 14px rgba(53,211,154,.04);
+ transition:
+  transform .25s cubic-bezier(.22,1,.36,1),
+  box-shadow .25s ease
+}
+
+.badge.yellow{
+ background:rgba(244,201,93,.09);
+ color:var(--yellow);
+ border-color:rgba(244,201,93,.10);
+ box-shadow:0 0 14px rgba(244,201,93,.04)
+}
+
+tbody tr:hover .badge{
+ transform:scale(1.08);
+ box-shadow:0 0 14px rgba(53,211,154,.12)
+}
+
+tbody tr:hover .badge.yellow{
+ box-shadow:0 0 14px rgba(244,201,93,.12)
+}
+
+
+/* =========================================
+   NOTIFICATION PANEL
+========================================= */
+
+.notification-panel{
+ position:fixed;
+ top:78px;
+ right:30px;
+ width:350px;
+ max-width:calc(100vw - 30px);
+ max-height:calc(100vh - 105px);
+ overflow:auto;
+ padding:16px;
+ border:1px solid var(--border);
+ border-radius:18px;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.11),
+   rgba(255,255,255,.035)
+  ),
+  var(--bg2);
+ backdrop-filter:blur(30px) saturate(145%);
+ -webkit-backdrop-filter:blur(30px) saturate(145%);
+ box-shadow:
+  0 25px 70px rgba(0,0,0,.35),
+  0 0 35px rgba(124,92,255,.08);
+ z-index:9999;
+ opacity:0;
+ visibility:hidden;
+ transform:translateY(-10px) scale(.97);
+ transform-origin:top right;
+ transition:all .28s cubic-bezier(.22,1,.36,1)
+}
+
+.notification-panel.open{
+ opacity:1;
+ visibility:visible;
+ transform:translateY(0) scale(1)
+}
+
+.notification-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding-bottom:11px;
+ border-bottom:1px solid var(--border-soft);
+ margin-bottom:10px
+}
+
+.notification-head strong{
+ font-size:14px
+}
+
+.notification-count{
+ font-size:10px;
+ color:var(--muted)
+}
+
+.notification-item{
+ display:flex;
+ gap:10px;
+ padding:12px;
+ margin-top:8px;
+ border-radius:13px;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.065),
+   rgba(255,255,255,.02)
+  );
+ border:1px solid var(--border-soft);
+ transition:var(--transition)
+}
+
+.notification-item:hover{
+ transform:translateX(3px);
+ border-color:rgba(151,132,255,.25);
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.10),
+   rgba(255,255,255,.025)
+  )
+}
+
+.notification-dot{
+ width:8px;
+ height:8px;
+ min-width:8px;
+ margin-top:5px;
+ border-radius:50%;
+ background:var(--red);
+ box-shadow:0 0 12px rgba(255,102,125,.55)
+}
+
+.notification-dot.warning{
+ background:var(--yellow);
+ box-shadow:0 0 12px rgba(244,201,93,.55)
+}
+
+.notification-dot.success{
+ background:var(--green);
+ box-shadow:0 0 12px rgba(53,211,154,.55)
+}
+
+.notification-item strong{
+ display:block;
+ font-size:11px;
+ margin-bottom:3px
+}
+
+.notification-item small{
+ color:var(--muted);
+ font-size:9px;
+ line-height:1.45
+}
+
+.notification-empty{
+ text-align:center;
+ color:var(--muted);
+ font-size:10px;
+ padding:22px 10px
+}
+
+
+/* =========================================
+   EMPTY DASHBOARD
+========================================= */
+
+.empty-dashboard{
+ width:100%;
+ display:grid;
+ place-items:center;
+ color:var(--muted);
+ font-size:10px;
+ min-height:150px
+}
+
+
+/* =========================================
+   LIGHT THEME
+========================================= */
+
+.light .card{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.78),
+   rgba(255,255,255,.42)
+  ),
+  var(--surface);
+ box-shadow:
+  0 22px 55px rgba(45,50,80,.10),
+  inset 0 1px 0 rgba(255,255,255,.72)
+}
+
+.light .card:hover{
+ border-color:rgba(105,82,210,.25);
+ box-shadow:
+  0 30px 70px rgba(45,50,80,.15),
+  0 0 30px rgba(105,82,210,.07),
+  inset 0 1px 0 rgba(255,255,255,.9)
+}
+
+.light .icon-btn,
+.light .user{
+ box-shadow:
+  0 8px 24px rgba(45,50,80,.07),
+  inset 0 1px 0 rgba(255,255,255,.8)
+}
+
+.light .icon-btn:hover,
+.light .user:hover{
+ box-shadow:
+  0 12px 30px rgba(45,50,80,.12),
+  0 0 20px rgba(124,92,255,.07),
+  inset 0 1px 0 rgba(255,255,255,.9)
+}
+
+.light nav a:hover{
+ background:
+  linear-gradient(
+   100deg,
+   rgba(124,92,255,.10),
+   rgba(79,140,255,.035),
+   rgba(255,255,255,.35)
+  );
+ box-shadow:
+  0 8px 24px rgba(45,50,80,.08),
+  0 0 18px rgba(124,92,255,.06)
+}
+
+.light .alert{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.65),
+   rgba(255,255,255,.35)
+  ),
+  var(--surface2)
+}
+
+.light tbody tr:hover td{
+ background:
+  linear-gradient(
+   90deg,
+   rgba(124,92,255,.045),
+   rgba(124,92,255,.012),
+   transparent
+  )
+}
+
+.light .chart:before{
+ background:rgba(40,45,70,.07);
+ box-shadow:
+  0 -48px 0 rgba(40,45,70,.07),
+  0 -96px 0 rgba(40,45,70,.07),
+  0 -144px 0 rgba(40,45,70,.07)
+}
+
+.light .chart::-webkit-scrollbar-thumb{
+ background:rgba(105,82,210,.30)
+}
+
+.light .notification-panel{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.82),
+   rgba(255,255,255,.55)
+  ),
+  var(--bg2);
+ box-shadow:
+  0 25px 70px rgba(45,50,80,.16),
+  0 0 35px rgba(124,92,255,.06)
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:1050px){
+
+ .grid{
+  grid-template-columns:repeat(2,1fr)
+ }
+
+ .content{
+  grid-template-columns:1fr
+ }
+
+}
+
+@media(max-width:720px){
+
+ .sidebar{
+  width:66px;
+  padding:15px 9px
+ }
+
+ .brand strong,
+ .brand small,
+ .nav-title,
+ nav a span:last-child,
+ .user>div:not(.avatar){
+  display:none
+ }
+
+ .brand{
+  padding:4px 4px 25px
+ }
+
+ .logo{
+  margin:auto
+ }
+
+ nav a{
+  justify-content:center;
+  padding:12px 5px
+ }
+
+ nav a.active:after{
+  left:1px
+ }
+
+ .sidebar-bottom{
+  left:8px;
+  right:8px
+ }
+
+ .user{
+  justify-content:center;
+  padding:8px
+ }
+
+ main{
+  margin-left:66px;
+  width:calc(100% - 66px);
+  padding:18px 14px 30px
+ }
+
+ h1{
+  font-size:22px
+ }
+
+ .grid{
+  grid-template-columns:1fr 1fr
+ }
+
+ .stat{
+  padding:15px
+ }
+
+ .value{
+  font-size:20px
+ }
+
+ .chart{
+  height:190px;
+  gap:7px
+ }
+
+ .panel,
+ .table-panel{
+  padding:17px
+ }
+
+ .topbar{
+  margin-bottom:22px
+ }
+
+ .card:hover{
+  transform:translate3d(0,-4px,0) scale(1.005)
+ }
+
+ .stat:hover{
+  transform:translate3d(0,-5px,0) scale(1.008)
+ }
+
+ .notification-panel{
+  top:70px;
+  right:14px;
+  width:330px
+ }
+
+}
+
+@media(max-width:450px){
+
+ .grid{
+  grid-template-columns:1fr
+ }
+
+ .topbar{
+  align-items:flex-start
+ }
+
+ .actions{
+  gap:5px
+ }
+
+ .table-panel{
+  overflow:auto
+ }
+
+ .table-panel table{
+  min-width:500px
+ }
+
+ .chart{
+  gap:5px
+ }
+
+ .panel-head{
+  margin-bottom:16px
+ }
+
+ .eyebrow{
+  font-size:11px
+ }
+
+ h1{
+  font-size:20px
+ }
+
+ .icon-btn{
+  width:36px;
+  height:36px
+ }
+
+ .notification-panel{
+  right:10px;
+  width:calc(100vw - 20px)
+ }
+
+}
+
+
+/* =========================================
+   PRESSED STATES
+========================================= */
+
+nav a:active,
+.card:active,
+.alert:active,
+.logo:active,
+.user:active{
+ transform:scale(.985)
+}
+
+
+/* =========================================
+   MICRO ANIMATIONS
+========================================= */
+
+@keyframes ambientFloat{
+
+ from{
+  transform:translate3d(0,0,0) scale(1)
+ }
+
+ to{
+  transform:translate3d(-20px,25px,0) scale(1.08)
+ }
+
+}
+
+@keyframes pulseRed{
+
+ 0%,100%{
+  box-shadow:
+   0 0 10px #ff667d66,
+   0 0 18px #ff667d22
+ }
+
+ 50%{
+  box-shadow:
+   0 0 15px #ff667daa,
+   0 0 26px #ff667d33
+ }
+
+}
+
+@keyframes pulseYellow{
+
+ 0%,100%{
+  box-shadow:
+   0 0 10px #f4c95d44,
+   0 0 18px #f4c95d18
+ }
+
+ 50%{
+  box-shadow:
+   0 0 15px #f4c95d88,
+   0 0 26px #f4c95d28
+ }
+
+}
+
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+ *,
+ *:before,
+ *:after{
+  animation-duration:.01ms!important;
+  animation-iteration-count:1!important;
+  scroll-behavior:auto!important;
+  transition-duration:.01ms!important
+ }
+
+ .card:hover,
+ .stat:hover,
+ nav a:hover,
+ .icon-btn:hover,
+ .user:hover,
+ .alert:hover,
+ .bar:hover,
+ tbody tr:hover{
+  transform:none
+ }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+  <div class="brand">
+
+    <div class="logo">I</div>
+
+    <div>
+      <strong>Inventory Pro</strong>
+      <small>Business OS</small>
+    </div>
+
+  </div>
+
+
+  <div class="nav-title">
+    Workspace
+  </div>
+
+
+  <nav>
+
+    <a class="active" href="index.html">
+      <span>⌂</span>
+      <span>Dashboard</span>
+    </a>
+
+    <a href="shop.html">
+      <span>▣</span>
+      <span>Shop & Products</span>
+    </a>
+
+    <a href="godown.html">
+      <span>▤</span>
+      <span>Godown</span>
+    </a>
+
+    <a href="billing.html">
+      <span>▤</span>
+      <span>Billing</span>
+    </a>
+
+  </nav>
+
+
+  <div class="sidebar-bottom">
+
+    <div class="user">
+
+      <div class="avatar">
+        A
+      </div>
+
+      <div>
+        <strong style="font-size:11px">
+          Admin
+        </strong>
+
+        <small>
+          Administrator
+        </small>
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
+
+
+<main>
+
+<header class="topbar">
+
+  <div>
+
+    <div class="eyebrow" id="dashboardDate">
+      Today
+    </div>
+
+    <h1 id="dashboardGreeting">
+      Good day, Admin
+    </h1>
+
+  </div>
+
+
+  <div class="actions">
+
+    <button
+      class="icon-btn"
+      id="themeBtn"
+      title="Toggle theme"
+      type="button"
+      aria-label="Toggle theme"
+    >
+      ☾
+    </button>
+
+
+    <button
+      class="icon-btn"
+      id="downloadExcel"
+      type="button"
+      title="Download 30-day Credit / Debit Excel report"
+      aria-label="Download Excel report"
+    >
+      ⇩
+    </button>
+
+
+    <button
+      class="icon-btn"
+      id="notificationBtn"
+      type="button"
+      title="Notifications"
+      aria-label="Notifications"
+    >
+      ♢
+    </button>
+
+  </div>
+
+</header>
+
+
+<section class="grid">
+
+  <div class="card stat">
+
+    <div class="stat-top">
+
+      <span class="stat-label">
+        Total Stock
+      </span>
+
+      <span class="stat-icon">
+        ▤
+      </span>
+
+    </div>
+
+
+    <div
+      class="value"
+      id="totalStock"
+    >
+      0
+    </div>
+
+
+    <div
+      class="change"
+      id="stockStatus"
+    >
+      Current warehouse stock
+    </div>
+
+  </div>
+
+
+  <div class="card stat">
+
+    <div class="stat-top">
+
+      <span class="stat-label">
+        Total Products
+      </span>
+
+      <span class="stat-icon">
+        ▣
+      </span>
+
+    </div>
+
+
+    <div
+      class="value"
+      id="totalProducts"
+    >
+      0
+    </div>
+
+
+    <div
+      class="change"
+      id="productStatus"
+    >
+      Products in inventory
+    </div>
+
+  </div>
+
+
+  <div class="card stat">
+
+    <div class="stat-top">
+
+      <span class="stat-label">
+        Low Stock
+      </span>
+
+      <span class="stat-icon">
+        !
+      </span>
+
+    </div>
+
+
+    <div
+      class="value"
+      id="lowStock"
+    >
+      0
+    </div>
+
+
+    <div
+      class="change warn"
+      id="lowStockStatus"
+    >
+      Needs attention
+    </div>
+
+  </div>
+
+
+  <div class="card stat">
+
+    <div class="stat-top">
+
+      <span class="stat-label">
+        Expiry Attention
+      </span>
+
+      <span class="stat-icon">
+        ◷
+      </span>
+
+    </div>
+
+
+    <div
+      class="value"
+      id="expiringSoon"
+    >
+      0
+    </div>
+
+
+    <div class="change danger">
+      3 days or less
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="content">
+
+  <div class="card panel">
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2>
+          Stock Overview
+        </h2>
+
+        <span>
+          Current warehouse inventory
+        </span>
+
+      </div>
+
+
+      <span id="stockTotalLabel">
+        0 units
+      </span>
+
+    </div>
+
+
+    <div
+      class="chart"
+      id="stockChart"
+    >
+
+      <div class="empty-dashboard">
+        Loading inventory...
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card panel">
+
+    <div class="panel-head">
+
+      <div>
+
+        <h2>
+          Expiry Alerts
+        </h2>
+
+        <span>
+          Products requiring attention
+        </span>
+
+      </div>
+
+
+      <span
+        id="expiryCountLabel"
+        style="color:var(--red)"
+      >
+        0 items
+      </span>
+
+    </div>
+
+
+    <div
+      class="alert-list"
+      id="expiryAlerts"
+    >
+
+      <div class="alert">
+
+        <i class="dot yellow"></i>
+
+        <div>
+
+          <strong>
+            Checking inventory...
+          </strong>
+
+          <small>
+            Please wait
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section class="card table-panel">
+
+  <div class="panel-head">
+
+    <div>
+
+      <h2>
+        Recent Stock Activity
+      </h2>
+
+      <span>
+        Latest inventory changes
+      </span>
+
+    </div>
+
+
+    <span id="activityCount">
+      0 activities
+    </span>
+
+  </div>
+
+
+  <table>
+
+    <thead>
+
+      <tr>
+
+        <th>
+          Product
+        </th>
+
+        <th>
+          Type
+        </th>
+
+        <th>
+          Quantity
+        </th>
+
+        <th>
+          Source
+        </th>
+
+        <th>
+          Status
+        </th>
+
+      </tr>
+
+    </thead>
+
+
+    <tbody id="activityTable">
+
+      <tr>
+
+        <td
+          colspan="5"
+          style="
+            text-align:center;
+            color:var(--muted);
+            padding:25px
+          "
+        >
+          No stock activity yet.
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+<!-- =========================================
+     NOTIFICATIONS
+========================================= -->
+
+<div
+  class="notification-panel"
+  id="notificationPanel"
+  role="dialog"
+  aria-label="Notifications"
+>
+</div>
+
+
+<script>
+
+/* =========================================================
+   INVENTORY PRO — REAL DASHBOARD
+========================================================= */
+
+const INVENTORY_KEY =
+  "inventory_data";
+
+const MOVEMENT_KEY =
+  "inventory_movements";
+
+
+/* =========================================================
+   READ INVENTORY
+========================================================= */
+
+function getInventory(){
+
+  try{
+
+    const data =
+      JSON.parse(
+        localStorage.getItem(
+          INVENTORY_KEY
+        ) || "[]"
+      );
+
+    return Array.isArray(data)
+      ? data.map(product => ({
+          ...product,
+          stock:Number(product.stock || 0),
+          min:Number(product.min ?? 10),
+          godown:product.godown || "Main Warehouse",
+          contents:Array.isArray(product.contents)
+            ? product.contents
+            : []
+        }))
+      : [];
+
+  }catch(error){
+
+    console.error(
+      "Inventory read error:",
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+   READ MOVEMENTS
+========================================================= */
+
+function getMovements(){
+
+  try{
+
+    const data =
+      JSON.parse(
+        localStorage.getItem(
+          MOVEMENT_KEY
+        ) || "[]"
+      );
+
+    return Array.isArray(data)
+      ? data
+      : [];
+
+  }catch(error){
+
+    console.error(
+      "Movement read error:",
+      error
+    );
+
+    return [];
+
+  }
+
+}
+
+
+/* =========================================================
+   DAYS LEFT
+========================================================= */
+
+function daysLeft(date){
+
+  if(!date){
+    return Infinity;
+  }
+
+  const expiry =
+    new Date(date);
+
+  if(isNaN(expiry)){
+    return Infinity;
+  }
+
+  const today =
+    new Date();
+
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  expiry.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  return Math.ceil(
+    (
+      expiry - today
+    ) / 86400000
+  );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    char => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[char])
+  );
+
+}
+
+
+/* =========================================================
+   UPDATE STATS
+========================================================= */
+
+function updateStats(){
+
+  const inventory =
+    getInventory();
+
+  const totalProducts =
+    inventory.length;
+
+  const totalStock =
+    inventory.reduce(
+      (total,product) =>
+        total +
+        Number(product.stock || 0),
+      0
+    );
+
+  const lowStock =
+    inventory.filter(
+      product =>
+        Number(product.stock || 0) <=
+        Number(product.min ?? 10)
+    );
+
+  const expiringSoon =
+    inventory.filter(
+      product =>
+        daysLeft(product.expiry) <= 3
+    );
+
+
+  document.getElementById(
+    "totalProducts"
+  ).textContent =
+    totalProducts;
+
+
+  document.getElementById(
+    "totalStock"
+  ).textContent =
+    totalStock.toLocaleString();
+
+
+  document.getElementById(
+    "lowStock"
+  ).textContent =
+    lowStock.length;
+
+
+  document.getElementById(
+    "expiringSoon"
+  ).textContent =
+    expiringSoon.length;
+
+
+  document.getElementById(
+    "stockTotalLabel"
+  ).textContent =
+    `${totalStock.toLocaleString()} units`;
+
+
+  document.getElementById(
+    "expiryCountLabel"
+  ).textContent =
+    `${expiringSoon.length} item${
+      expiringSoon.length === 1
+        ? ""
+        : "s"
+    }`;
+
+
+  const lowStatus =
+    document.getElementById(
+      "lowStockStatus"
+    );
+
+
+  if(lowStock.length === 0){
+
+    lowStatus.textContent =
+      "✓ Stock levels healthy";
+
+    lowStatus.className =
+      "change";
+
+  }else{
+
+    lowStatus.textContent =
+      "Needs attention";
+
+    lowStatus.className =
+      "change warn";
+
+  }
+
+
+  const productStatus =
+    document.getElementById(
+      "productStatus"
+    );
+
+
+  productStatus.textContent =
+    `${totalProducts} active inventory record${
+      totalProducts === 1
+        ? ""
+        : "s"
+    }`;
+
+}
+
+
+/* =========================================================
+   EXPIRY ALERTS
+========================================================= */
+
+function renderExpiryAlerts(){
+
+  const inventory =
+    getInventory();
+
+  const container =
+    document.getElementById(
+      "expiryAlerts"
+    );
+
+
+  const expiring =
+    inventory
+      .map(product => ({
+        product,
+        days:daysLeft(product.expiry)
+      }))
+      .filter(item => item.days <= 3)
+      .sort((a,b) => a.days - b.days);
+
+
+  if(!expiring.length){
+
+    container.innerHTML = `
+
+      <div class="alert">
+
+        <i
+          class="dot yellow"
+          style="
+            background:var(--green);
+            box-shadow:0 0 12px #35d39a66
+          "
+        ></i>
+
+        <div>
+
+          <strong>
+            No expiry alerts
+          </strong>
+
+          <small>
+            No products expire within 3 days.
+          </small>
+
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    expiring
+      .map(({product,days}) => {
+
+        const expired =
+          days < 0;
+
+        const danger =
+          days <= 1;
+
+
+        return `
+
+          <div class="alert">
+
+            <i
+              class="dot ${
+                danger
+                  ? ""
+                  : "yellow"
+              }"
+            ></i>
+
+            <div>
+
+              <strong>
+                ${escapeHTML(
+                  product.name ||
+                  "Unnamed Product"
+                )}
+              </strong>
+
+              <small>
+                Batch:
+                ${escapeHTML(
+                  product.batch ||
+                  "—"
+                )}
+
+                ·
+
+                ${escapeHTML(
+                  product.expiry ||
+                  "No expiry"
+                )}
+              </small>
+
+            </div>
+
+            <span
+              class="days"
+              style="
+                color:${
+                  expired || danger
+                    ? "var(--red)"
+                    : "var(--yellow)"
+                }
+              "
+            >
+
+              ${
+                days < 0
+                  ? "EXPIRED"
+                  : days === 0
+                    ? "Today"
+                    : `${days} day${
+                        days === 1
+                          ? ""
+                          : "s"
+                      }`
+              }
+
+            </span>
+
+          </div>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+/* =========================================================
+   STOCK CHART
+========================================================= */
+
+function renderStockChart(){
+
+  const inventory =
+    getInventory();
+
+  const chart =
+    document.getElementById(
+      "stockChart"
+    );
+
+
+  if(!inventory.length){
+
+    chart.innerHTML = `
+
+      <div
+        class="empty-dashboard"
+        style="
+          width:100%;
+          text-align:center;
+          color:var(--muted);
+          padding:50px 10px
+        "
+      >
+        No inventory available.
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  const items =
+    [...inventory].sort(
+      (a,b) =>
+        Number(b.stock || 0) -
+        Number(a.stock || 0)
+    );
+
+
+  const max =
+    Math.max(
+      ...items.map(
+        item =>
+          Number(item.stock || 0)
+      ),
+      1
+    );
+
+
+  chart.innerHTML =
+    items
+      .map(item => {
+
+        const stock =
+          Number(item.stock || 0);
+
+        const height =
+          Math.max(
+            8,
+            (stock / max) * 100
+          );
+
+        const productName =
+          item.name ||
+          "Product";
+
+
+        return `
+
+          <div
+            class="bar"
+            data-label="${escapeHTML(
+              productName
+            )}"
+            style="
+              height:${height}%
+            "
+            title="${escapeHTML(
+              productName
+            )}: ${stock} units"
+          ></div>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+/* =========================================================
+   RECENT ACTIVITIES
+========================================================= */
+
+function renderActivities(){
+
+  const movements =
+    getMovements();
+
+  const table =
+    document.getElementById(
+      "activityTable"
+    );
+
+
+  const recent =
+    [...movements]
+      .reverse()
+      .slice(0,8);
+
+
+  document.getElementById(
+    "activityCount"
+  ).textContent =
+    `${recent.length} activit${
+      recent.length === 1
+        ? "y"
+        : "ies"
+    }`;
+
+
+  if(!recent.length){
+
+    table.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="5"
+          style="
+            text-align:center;
+            color:var(--muted);
+            padding:25px
+          "
+        >
+          No stock activity yet.
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  table.innerHTML =
+    recent
+      .map(movement => {
+
+        const rawType =
+          String(
+            movement.type || ""
+          ).toLowerCase();
+
+        const isOut =
+          rawType === "out" ||
+          rawType === "sale" ||
+          rawType === "debit";
+
+
+        const quantity =
+          Number(
+            movement.qty ??
+            movement.quantity ??
+            0
+          );
+
+
+        return `
+
+          <tr>
+
+            <td>
+              ${escapeHTML(
+                movement.name ||
+                "Unknown Product"
+              )}
+            </td>
+
+            <td>
+              ${
+                isOut
+                  ? "Sale"
+                  : "Stock In"
+              }
+            </td>
+
+            <td
+              style="
+                color:${
+                  isOut
+                    ? "var(--red)"
+                    : "var(--green)"
+                };
+                font-weight:650
+              "
+            >
+              ${
+                isOut
+                  ? "-"
+                  : "+"
+              }${quantity}
+            </td>
+
+            <td>
+              ${escapeHTML(
+                movement.source ||
+                "Inventory"
+              )}
+            </td>
+
+            <td>
+
+              <span
+                class="badge ${
+                  isOut
+                    ? ""
+                    : "yellow"
+                }"
+              >
+                ${
+                  isOut
+                    ? "Sold"
+                    : "Added"
+                }
+              </span>
+
+            </td>
+
+          </tr>
+
+        `;
+
+      })
+      .join("");
+
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+const themeBtn =
+  document.getElementById(
+    "themeBtn"
+  );
+
+
+const savedTheme =
+  localStorage.getItem(
+    "inventory_theme"
+  );
+
+
+if(savedTheme === "light"){
+
+  document.body.classList.add(
+    "light"
+  );
+
+  themeBtn.textContent =
+    "☀";
+
+}
+
+
+themeBtn.onclick = () => {
+
+  document.body.classList.toggle(
+    "light"
+  );
+
+
+  const light =
+    document.body.classList.contains(
+      "light"
+    );
+
+
+  localStorage.setItem(
+    "inventory_theme",
+    light
+      ? "light"
+      : "dark"
+  );
+
+
+  themeBtn.textContent =
+    light
+      ? "☀"
+      : "☾";
+
+};
+
+
+/* =========================================================
+   DATE + GREETING
+========================================================= */
+
+function updateDashboardHeader(){
+
+  const now =
+    new Date();
+
+  const dateElement =
+    document.getElementById(
+      "dashboardDate"
+    );
+
+  const greetingElement =
+    document.getElementById(
+      "dashboardGreeting"
+    );
+
+
+  if(
+    !dateElement ||
+    !greetingElement
+  ){
+    return;
+  }
+
+
+  dateElement.textContent =
+    now.toLocaleDateString(
+      "en-IN",
+      {
+        weekday:"long",
+        day:"2-digit",
+        month:"long",
+        year:"numeric"
+      }
+    );
+
+
+  const hour =
+    now.getHours();
+
+
+  const greeting =
+    hour < 12
+      ? "Good morning"
+      : hour < 17
+        ? "Good afternoon"
+        : "Good evening";
+
+
+  greetingElement.textContent =
+    `${greeting}, Admin`;
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+const notificationBtn =
+  document.getElementById(
+    "notificationBtn"
+  );
+
+const notificationPanel =
+  document.getElementById(
+    "notificationPanel"
+  );
+
+
+function renderNotifications(){
+
+  const inventory =
+    getInventory();
+
+  const movements =
+    getMovements();
+
+  const notifications = [];
+
+
+  inventory.forEach(product => {
+
+    const days =
+      daysLeft(
+        product.expiry
+      );
+
+
+    if(days < 0){
+
+      notifications.push({
+
+        type:"danger",
+
+        title:"Expired Product",
+
+        text:
+          `${product.name || "Product"} is expired.`
+
+      });
+
+    }
+    else if(days <= 3){
+
+      notifications.push({
+
+        type:"warning",
+
+        title:"Expiry Attention",
+
+        text:
+          `${product.name || "Product"} expires ${
+            days === 0
+              ? "today"
+              : `in ${days} day${days === 1 ? "" : "s"}`
+          }.`
+
+      });
+
+    }
+
+  });
+
+
+  inventory.forEach(product => {
+
+    const stock =
+      Number(
+        product.stock || 0
+      );
+
+    const minimum =
+      Number(
+        product.min ?? 10
+      );
+
+
+    if(stock <= minimum){
+
+      notifications.push({
+
+        type:"warning",
+
+        title:"Low Stock",
+
+        text:
+          `${product.name || "Product"} has only ${stock} unit${
+            stock === 1
+              ? ""
+              : "s"
+          } remaining.`
+
+      });
+
+    }
+
+  });
+
+
+  if(movements.length){
+
+    const recent =
+      movements[movements.length - 1];
+
+
+    const type =
+      String(
+        recent.type || ""
+      ).toLowerCase();
+
+
+    notifications.push({
+
+      type:"success",
+
+      title:"Latest Stock Activity",
+
+      text:
+        `${recent.name || "Product"} — ${
+          type === "out" ||
+          type === "sale" ||
+          type === "debit"
+            ? "Stock Out"
+            : "Stock In"
+        } ${Number(
+          recent.qty ??
+          recent.quantity ??
+          0
+        )} unit(s).`
+
+    });
+
+  }
+
+
+  const visible =
+    notifications.slice(0,8);
+
+
+  notificationPanel.innerHTML = `
+
+    <div class="notification-head">
+
+      <strong>
+        Notifications
+      </strong>
+
+      <span class="notification-count">
+        ${visible.length}
+        alert${visible.length === 1 ? "" : "s"}
+      </span>
+
+    </div>
+
+
+    ${
+      visible.length
+
+        ? visible.map(item => `
+
+            <div class="notification-item">
+
+              <span
+                class="notification-dot ${
+                  item.type === "warning"
+                    ? "warning"
+                    : item.type === "success"
+                      ? "success"
+                      : ""
+                }"
+              ></span>
+
+              <div>
+
+                <strong>
+                  ${escapeHTML(
+                    item.title
+                  )}
+                </strong>
+
+                <small>
+                  ${escapeHTML(
+                    item.text
+                  )}
+                </small>
+
+              </div>
+
+            </div>
+
+          `).join("")
+
+        : `
+
+            <div class="notification-empty">
+              No notifications.
+            </div>
+
+          `
+    }
+
+  `;
+
+}
+
+
+notificationBtn.addEventListener(
+  "click",
+  event => {
+
+    event.stopPropagation();
+
+    renderNotifications();
+
+    notificationPanel.classList.toggle(
+      "open"
+    );
+
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if(
+      !notificationPanel.contains(
+        event.target
+      ) &&
+      event.target !==
+        notificationBtn
+    ){
+
+      notificationPanel.classList.remove(
+        "open"
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+function refreshDashboard(){
+
+  updateStats();
+
+  renderExpiryAlerts();
+
+  renderStockChart();
+
+  renderActivities();
+
+  updateDashboardHeader();
+
+  if(
+    notificationPanel.classList.contains(
+      "open"
+    )
+  ){
+
+    renderNotifications();
+
+  }
+
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+refreshDashboard();
+
+
+/* =========================================================
+   LIVE SYNCHRONIZATION
+========================================================= */
+
+window.addEventListener(
+  "storage",
+  event => {
+
+    if(
+      event.key === INVENTORY_KEY ||
+      event.key === MOVEMENT_KEY
+    ){
+
+      refreshDashboard();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   REFRESH WHEN TAB ACTIVE
+========================================================= */
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+
+    if(!document.hidden){
+
+      refreshDashboard();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   PERIODIC REFRESH
+========================================================= */
+
+setInterval(
+  refreshDashboard,
+  5000
+);
+
+</script>
+
+
+<script src="excel.js"></script>
+
+</body>
+</html>

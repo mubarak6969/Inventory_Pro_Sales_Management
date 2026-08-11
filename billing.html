@@ -1,0 +1,4367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billing | Inventory Pro</title>
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0
+}
+
+:root{
+ --bg:#06070b;
+ --bg2:#0b0d14;
+ --glass:rgba(255,255,255,.065);
+ --glass2:rgba(255,255,255,.035);
+ --border:rgba(255,255,255,.115);
+ --border-soft:rgba(255,255,255,.065);
+ --text:#f7f8ff;
+ --muted:#9298a8;
+ --accent:#7c5cff;
+ --blue:#4f8cff;
+ --green:#35d39a;
+ --red:#ff667d;
+ --yellow:#f4c95d;
+ --shadow:0 25px 70px rgba(0,0,0,.34);
+ --radius:20px;
+ --ease:cubic-bezier(.22,1,.36,1);
+ --transition:all .32s var(--ease)
+}
+
+body.light{
+ --bg:#edf0f7;
+ --bg2:#f7f8fc;
+ --glass:rgba(255,255,255,.66);
+ --glass2:rgba(255,255,255,.42);
+ --border:rgba(30,35,60,.105);
+ --border-soft:rgba(30,35,60,.065);
+ --text:#171923;
+ --muted:#687080;
+ --shadow:0 22px 60px rgba(40,45,70,.13)
+}
+
+html{
+ scroll-behavior:smooth
+}
+
+body{
+ min-height:100vh;
+ background:
+  radial-gradient(circle at 7% 4%,rgba(108,76,255,.20),transparent 25%),
+  radial-gradient(circle at 96% 18%,rgba(79,140,255,.12),transparent 25%),
+  radial-gradient(circle at 75% 100%,rgba(0,212,255,.10),transparent 30%),
+  linear-gradient(135deg,var(--bg),var(--bg2));
+ color:var(--text);
+ font-family:Inter,Segoe UI,Arial,sans-serif;
+ overflow-x:hidden;
+ transition:
+  background .55s ease,
+  color .4s ease
+}
+
+body:before,
+body:after{
+ content:"";
+ position:fixed;
+ border-radius:50%;
+ pointer-events:none;
+ z-index:-1;
+ animation:ambientFloat 10s ease-in-out infinite alternate
+}
+
+body:before{
+ width:480px;
+ height:480px;
+ top:-220px;
+ right:-100px;
+ background:radial-gradient(circle,#7658ff2c 0%,#7658ff0c 38%,transparent 70%);
+ filter:blur(65px)
+}
+
+body:after{
+ width:420px;
+ height:420px;
+ bottom:-220px;
+ left:35%;
+ background:radial-gradient(circle,#00cfff18 0%,transparent 70%);
+ filter:blur(75px);
+ animation-direction:alternate-reverse
+}
+
+button,
+input,
+select{
+ font:inherit
+}
+
+button{
+ -webkit-tap-highlight-color:transparent
+}
+
+.app{
+ display:flex;
+ min-height:100vh
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+ width:245px;
+ position:fixed;
+ inset:0 auto 0 0;
+ padding:22px 14px;
+ border-right:1px solid var(--border);
+
+ background:
+  linear-gradient(
+   180deg,
+   rgba(255,255,255,.075),
+   rgba(255,255,255,.025)
+  ),
+  rgba(8,9,15,.52);
+
+ backdrop-filter:blur(30px) saturate(145%);
+ -webkit-backdrop-filter:blur(30px) saturate(145%);
+
+ box-shadow:12px 0 45px rgba(0,0,0,.12);
+
+ z-index:20;
+ overflow:hidden;
+
+ transition:
+  background .55s ease,
+  border-color .4s ease,
+  box-shadow .4s ease
+}
+
+body.light .sidebar{
+ background:
+  linear-gradient(
+   180deg,
+   rgba(255,255,255,.96),
+   rgba(244,246,252,.88)
+  ),
+  #f4f6fb;
+
+ border-right-color:rgba(30,35,60,.10);
+
+ box-shadow:
+  12px 0 45px rgba(40,45,70,.10)
+}
+
+.sidebar:after{
+ content:"";
+ position:absolute;
+ top:0;
+ right:0;
+ width:1px;
+ height:100%;
+ background:
+  linear-gradient(
+   180deg,
+   transparent,
+   #927dff55,
+   transparent
+  );
+ pointer-events:none
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:5px 10px 28px;
+ position:relative;
+ z-index:1
+}
+
+.logo{
+ width:39px;
+ height:39px;
+ border-radius:13px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,#a18cff,#6248e9);
+ color:#fff;
+ font-weight:900;
+ box-shadow:0 10px 28px #7658ff45;
+ border:1px solid #ffffff33
+}
+
+.brand strong{
+ font-size:16px;
+ color:var(--text)
+}
+
+.brand small{
+ display:block;
+ color:var(--muted);
+ font-size:10px;
+ margin-top:3px
+}
+
+.nav-title{
+ font-size:10px;
+ text-transform:uppercase;
+ color:#686f80;
+ letter-spacing:1.4px;
+ padding:0 12px 9px
+}
+
+body.light .nav-title{
+ color:#737b8d
+}
+
+nav a{
+ display:flex;
+ align-items:center;
+ gap:12px;
+ color:var(--muted);
+ text-decoration:none;
+ padding:11px 12px;
+ border-radius:13px;
+ margin:3px 0;
+ font-size:13px;
+ border:1px solid transparent;
+ transition:var(--transition);
+ position:relative
+}
+
+body.light nav a{
+ color:#596274
+}
+
+nav a:hover{
+ color:var(--text);
+ transform:translateX(5px) scale(1.025);
+ background:
+  linear-gradient(
+   100deg,
+   #7c5cff29,
+   #4f8cff0e,
+   #fff6
+  );
+ border-color:#8b76ff40
+}
+
+body.light nav a:hover{
+ color:#171923;
+ background:
+  linear-gradient(
+   100deg,
+   rgba(124,92,255,.13),
+   rgba(79,140,255,.07),
+   rgba(255,255,255,.80)
+  );
+ border-color:rgba(124,92,255,.22)
+}
+
+nav a.active{
+ color:var(--text);
+ background:
+  linear-gradient(
+   135deg,
+   #7c5cff40,
+   #4f8cff1a
+  );
+ border-color:#8b76ff47
+}
+
+body.light nav a.active{
+ color:#171923;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.17),
+   rgba(79,140,255,.09)
+  );
+ border-color:rgba(124,92,255,.32)
+}
+
+nav a.active:after{
+ content:"";
+ position:absolute;
+ left:0;
+ width:3px;
+ height:50%;
+ background:
+  linear-gradient(
+   180deg,
+   #a998ff,
+   #628cff
+  );
+ border-radius:0 4px 4px 0
+}
+
+nav a span:first-child{
+ width:20px;
+ text-align:center
+}
+
+.sidebar-bottom{
+ position:absolute;
+ bottom:18px;
+ left:14px;
+ right:14px
+}
+
+.user{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ padding:11px;
+ border:1px solid var(--border);
+ border-radius:15px;
+ background:var(--glass);
+ transition:var(--transition)
+}
+
+body.light .user{
+ background:rgba(255,255,255,.78);
+ border-color:rgba(30,35,60,.10);
+ color:#171923
+}
+
+.avatar{
+ width:32px;
+ height:32px;
+ border-radius:10px;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(
+  135deg,
+  #7c5cff47,
+  #4f8cff1f
+ )
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+ margin-left:245px;
+ width:calc(100% - 245px);
+ padding:25px 30px 40px
+}
+
+.topbar{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-start;
+ margin-bottom:22px
+}
+
+.eyebrow{
+ color:var(--muted);
+ font-size:12px;
+ margin-bottom:6px
+}
+
+h1{
+ font-size:27px;
+ letter-spacing:-.9px
+}
+
+.actions{
+ display:flex;
+ gap:9px
+}
+
+.icon-btn{
+ height:40px;
+ width:40px;
+ border:1px solid var(--border);
+ border-radius:12px;
+ background:var(--glass);
+ color:var(--text);
+ cursor:pointer;
+ transition:var(--transition)
+}
+
+.icon-btn:hover{
+ transform:translateY(-4px) scale(1.08);
+ border-color:#9784ff7a
+}
+
+.layout{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) 340px;
+ gap:15px
+}
+
+.card{
+ border:1px solid var(--border);
+
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.09),
+   rgba(255,255,255,.025)
+  ),
+  var(--glass);
+
+ border-radius:20px;
+
+ backdrop-filter:blur(26px) saturate(135%);
+ -webkit-backdrop-filter:blur(26px) saturate(135%);
+
+ box-shadow:
+  0 25px 70px rgba(0,0,0,.34);
+
+ position:relative;
+ overflow:hidden;
+
+ transition:var(--transition)
+}
+
+body.light .card{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.93),
+   rgba(255,255,255,.62)
+  ),
+  var(--glass);
+
+ box-shadow:
+  0 22px 55px rgba(45,50,80,.10),
+  inset 0 1px 0 rgba(255,255,255,.85)
+}
+
+.card:hover{
+ transform:translateY(-4px);
+ border-color:#9784ff5e
+}
+
+.panel{
+ padding:18px
+}
+
+.panel-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:15px
+}
+
+.panel-head h2{
+ font-size:14px
+}
+
+.panel-head small{
+ color:var(--muted);
+ font-size:10px
+}
+
+/* =========================
+   CUSTOMER
+========================= */
+
+.customer-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:11px
+}
+
+.field{
+ display:flex;
+ flex-direction:column;
+ gap:6px
+}
+
+.field.full{
+ grid-column:1/-1
+}
+
+.field label{
+ color:var(--muted);
+ font-size:9px
+}
+
+.field input{
+ width:100%;
+ height:41px;
+ border:1px solid var(--border);
+ border-radius:11px;
+ background:#ffffff06;
+ color:var(--text);
+ outline:none;
+ padding:0 11px;
+ font-size:10px;
+ transition:var(--transition)
+}
+
+body.light .field input{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.94),
+   rgba(255,255,255,.70)
+  ),
+  var(--glass2);
+ color:#171923
+}
+
+.field input:focus{
+ border-color:#9784ff75;
+ box-shadow:0 0 0 3px #7c5cff15
+}
+
+.field input::placeholder{
+ color:var(--muted)
+}
+
+.scan{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) 90px;
+ gap:8px
+}
+
+.scan button{
+ height:41px;
+ border:1px solid #ffffff25;
+ border-radius:11px;
+ background:
+  linear-gradient(
+   135deg,
+   #4f8fffd0,
+   #5564e8a8
+  );
+ color:#fff;
+ cursor:pointer;
+ font-size:10px;
+ font-weight:700;
+ transition:var(--transition)
+}
+
+.scan button:hover{
+ transform:translateY(-3px)
+}
+
+/* =========================
+   SCANNED PRODUCT
+========================= */
+
+.scanned-product{
+ display:none;
+ margin-top:14px;
+ padding:14px;
+ border:1px solid #7c5cff32;
+ border-radius:15px;
+ background:#7c5cff12
+}
+
+.scanned-product.show{
+ display:block;
+ animation:reveal .35s var(--ease)
+}
+
+.scanned-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:13px
+}
+
+.scanned-title{
+ display:flex;
+ align-items:center;
+ gap:10px
+}
+
+.scanned-icon{
+ width:38px;
+ height:38px;
+ border-radius:11px;
+ display:grid;
+ place-items:center;
+ background:#7c5cff20
+}
+
+.scanned-title strong{
+ display:block;
+ font-size:12px
+}
+
+.scanned-title small{
+ display:block;
+ margin-top:3px;
+ color:var(--muted);
+ font-size:8px
+}
+
+.type-badge{
+ padding:5px 8px;
+ border-radius:7px;
+ background:#7c5cff13;
+ border:1px solid #7c5cff24;
+ color:#b3a6ff;
+ font-size:7px;
+ font-weight:800
+}
+
+.product-details{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:7px
+}
+
+.detail-box{
+ padding:9px;
+ border:1px solid var(--border-soft);
+ border-radius:10px;
+ background:#ffffff05
+}
+
+.detail-box label{
+ display:block;
+ color:var(--muted);
+ font-size:7px;
+ margin-bottom:5px
+}
+
+.detail-box strong{
+ font-size:9px
+}
+
+.expiry-warning{
+ display:none;
+ margin-top:10px;
+ padding:9px 10px;
+ border-radius:9px;
+ color:var(--yellow);
+ background:#f4c95d0c;
+ border:1px solid #f4c95d20;
+ font-size:8px
+}
+
+.expiry-warning.show{
+ display:block
+}
+
+.expiry-warning.danger{
+ color:var(--red);
+ background:#ff667d0d;
+ border-color:#ff667d22
+}
+
+.bundle-products{
+ display:none;
+ margin-top:11px
+}
+
+.bundle-products h3{
+ font-size:9px;
+ color:var(--muted);
+ margin-bottom:7px
+}
+
+.bundle-product-list{
+ display:grid;
+ gap:5px
+}
+
+.bundle-product{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) auto auto auto;
+ gap:8px;
+ align-items:center;
+ padding:8px;
+ border:1px solid var(--border-soft);
+ border-radius:9px;
+ background:#ffffff04
+}
+
+.bundle-product strong{
+ display:block;
+ font-size:8px
+}
+
+.bundle-product span{
+ color:var(--muted);
+ font-size:7px
+}
+
+.add-scanned{
+ width:100%;
+ height:40px;
+ margin-top:11px;
+ border:1px solid #ffffff25;
+ border-radius:11px;
+ background:
+  linear-gradient(
+   135deg,
+   #7c5cffd0,
+   #583adc9c
+  );
+ color:#fff;
+ cursor:pointer;
+ font-size:10px;
+ font-weight:700;
+ transition:var(--transition)
+}
+
+.add-scanned:hover{
+ transform:translateY(-3px)
+}
+
+.add-scanned:disabled{
+ opacity:.5;
+ cursor:not-allowed;
+ transform:none
+}
+
+/* =========================
+   CART
+========================= */
+
+.cart-list{
+ display:grid;
+ gap:8px;
+ max-height:430px;
+ overflow:auto
+}
+
+.item{
+ padding:11px;
+ border:1px solid var(--border);
+ border-radius:12px;
+ background:#ffffff07;
+ display:flex;
+ justify-content:space-between;
+ gap:10px
+}
+
+body.light .item{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.82),
+   rgba(255,255,255,.52)
+  ),
+  var(--glass2)
+}
+
+.item-info{
+ min-width:0
+}
+
+.item-info strong{
+ display:block;
+ font-size:10px
+}
+
+.item-info small{
+ display:block;
+ color:var(--muted);
+ font-size:7px;
+ margin-top:4px
+}
+
+.qty{
+ display:flex;
+ align-items:center;
+ gap:7px
+}
+
+.qty button{
+ width:25px;
+ height:25px;
+ border:1px solid var(--border);
+ border-radius:8px;
+ background:var(--glass2);
+ color:var(--text);
+ cursor:pointer;
+ transition:var(--transition)
+}
+
+.qty button:hover{
+ transform:scale(1.08)
+}
+
+.qty span{
+ min-width:18px;
+ text-align:center;
+ font-size:9px
+}
+
+.empty{
+ padding:30px 15px;
+ text-align:center;
+ color:var(--muted);
+ font-size:9px;
+ border:1px dashed var(--border);
+ border-radius:13px
+}
+
+/* =========================
+   SUMMARY
+========================= */
+
+.summary{
+ margin-top:15px;
+ padding-top:13px;
+ border-top:1px solid var(--border)
+}
+
+.row{
+ display:flex;
+ justify-content:space-between;
+ margin:8px 0;
+ color:var(--muted);
+ font-size:10px
+}
+
+.row.total{
+ color:var(--text);
+ font-size:16px;
+ font-weight:750;
+ padding-top:9px;
+ border-top:1px solid var(--border)
+}
+
+.payments{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:7px
+}
+
+/* PAYMENT BUTTON — THEME FIX */
+
+.pay{
+ height:38px;
+ border:1px solid var(--border);
+ border-radius:10px;
+ background:#ffffff06;
+ color:#f7f8ff;
+ cursor:pointer;
+ font-size:9px;
+ transition:var(--transition)
+}
+
+body.light .pay{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.82),
+   rgba(255,255,255,.54)
+  ),
+  var(--glass2);
+ color:#171923;
+}
+
+.pay:hover{
+ transform:translateY(-2px)
+}
+
+.pay.selected{
+ color:#fff;
+ background:
+  linear-gradient(
+   135deg,
+   #7c5cff54,
+   #4f8cff25
+  );
+ border-color:#9784ff61
+}
+
+body.light .pay.selected{
+ color:#171923;
+ background:
+  linear-gradient(
+   135deg,
+   rgba(124,92,255,.18),
+   rgba(79,140,255,.10)
+  );
+ border-color:rgba(124,92,255,.38)
+}
+
+.generate{
+ width:100%;
+ min-height:42px;
+ margin-top:9px;
+ border:1px solid #ffffff25;
+ border-radius:11px;
+ background:
+  linear-gradient(
+   135deg,
+   #7c5cffd0,
+   #583adc9c
+  );
+ color:#fff;
+ cursor:pointer;
+ font-size:9px;
+ font-weight:700;
+ transition:var(--transition)
+}
+
+.generate:hover{
+ transform:translateY(-3px)
+}
+
+.generate:disabled{
+ opacity:.55;
+ cursor:not-allowed;
+ transform:none
+}
+
+.notice{
+ margin-top:11px;
+ padding:10px;
+ border-radius:10px;
+ color:var(--muted);
+ background:#ffffff04;
+ border:1px solid var(--border-soft);
+ font-size:8px;
+ line-height:1.5
+}
+
+.notice.success{
+ color:var(--green);
+ background:#35d39a0b;
+ border-color:#35d39a1e
+}
+
+.notice.warning{
+ color:var(--yellow);
+ background:#f4c95d0b;
+ border-color:#f4c95d1e
+}
+
+.notice.danger{
+ color:var(--red);
+ background:#ff667d0b;
+ border-color:#ff667d1e
+}
+
+/* =========================
+   INVOICE
+========================= */
+
+.invoice-preview{
+ margin-top:15px;
+ padding:18px
+}
+
+.receipt{
+ max-width:620px;
+ margin:auto;
+ padding:22px;
+ border:1px solid var(--border);
+ border-radius:17px;
+ background:#ffffff05
+}
+
+body.light .receipt{
+ background:
+  linear-gradient(
+   135deg,
+   rgba(255,255,255,.88),
+   rgba(255,255,255,.58)
+  )
+}
+
+.receipt-head{
+ padding-bottom:12px;
+ border-bottom:1px dashed var(--border)
+}
+
+.receipt-head h3{
+ font-size:17px;
+ letter-spacing:1px
+}
+
+.receipt-head small{
+ display:block;
+ color:var(--muted);
+ font-size:8px;
+ margin-top:4px
+}
+
+.receipt-line{
+ display:flex;
+ justify-content:space-between;
+ gap:15px;
+ padding:7px 0;
+ color:var(--muted);
+ font-size:9px
+}
+
+.receipt-line strong{
+ color:var(--text)
+}
+
+.receipt-items{
+ margin:15px 0;
+ padding:8px 0;
+ border-top:1px dashed var(--border);
+ border-bottom:1px dashed var(--border)
+}
+
+.receipt-total{
+ margin-top:8px;
+ padding-top:12px;
+ border-top:1px solid var(--border);
+ color:var(--text);
+ font-size:13px;
+ font-weight:750
+}
+
+.receipt-foot{
+ text-align:center;
+ color:var(--muted);
+ font-size:8px;
+ padding-top:13px
+}
+
+/* =========================
+   SCANNER
+========================= */
+
+.scanner-modal{
+ position:fixed;
+ inset:0;
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ background:#000c;
+ backdrop-filter:blur(14px);
+ z-index:200
+}
+
+.scanner-modal.show{
+ display:flex
+}
+
+.scanner-box{
+ width:min(470px,100%);
+ padding:18px;
+ border:1px solid var(--border);
+ border-radius:22px;
+ background:#0b0d14ee;
+ backdrop-filter:blur(30px);
+ box-shadow:0 40px 100px #0009
+}
+
+.scanner-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:12px
+}
+
+.scanner-video{
+ width:100%;
+ aspect-ratio:4/3;
+ object-fit:cover;
+ border-radius:16px;
+ background:#020305
+}
+
+.scanner-status{
+ padding:10px 2px 2px;
+ color:var(--muted);
+ font-size:9px
+}
+
+.scanner-actions{
+ display:flex;
+ gap:8px;
+ margin-top:12px
+}
+
+.scanner-actions button{
+ flex:1;
+ height:39px;
+ border:1px solid var(--border);
+ border-radius:11px;
+ background:#ffffff09;
+ color:#fff;
+ cursor:pointer
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1000px){
+ .layout{
+  grid-template-columns:1fr
+ }
+}
+
+@media(max-width:720px){
+
+ .sidebar{
+  width:66px;
+  padding:15px 9px
+ }
+
+ .brand strong,
+ .brand small,
+ .nav-title,
+ nav a span:last-child{
+  display:none
+ }
+
+ .brand{
+  padding:4px 4px 25px
+ }
+
+ .logo{
+  margin:auto
+ }
+
+ nav a{
+  justify-content:center;
+  padding:12px 5px
+ }
+
+ .sidebar-bottom{
+  left:8px;
+  right:8px
+ }
+
+ .user{
+  justify-content:center
+ }
+
+ main{
+  margin-left:66px;
+  width:calc(100% - 66px);
+  padding:18px 14px 30px
+ }
+
+ h1{
+  font-size:22px
+ }
+}
+
+@media(max-width:620px){
+
+ .customer-grid{
+  grid-template-columns:1fr
+ }
+
+ .field.full{
+  grid-column:auto
+ }
+
+ .product-details{
+  grid-template-columns:1fr 1fr
+ }
+
+ .payments{
+  grid-template-columns:1fr
+ }
+}
+
+@media(max-width:480px){
+
+ .scan{
+  grid-template-columns:1fr
+ }
+
+ .bundle-product{
+  grid-template-columns:1fr
+ }
+
+ .scanner-actions{
+  flex-direction:column
+ }
+}
+
+@keyframes ambientFloat{
+ from{
+  transform:translate3d(0,0,0) scale(1)
+ }
+ to{
+  transform:translate3d(-20px,25px,0) scale(1.08)
+ }
+}
+
+@keyframes reveal{
+ from{
+  opacity:0;
+  transform:translateY(12px) scale(.98)
+ }
+ to{
+  opacity:1;
+  transform:translateY(0) scale(1)
+ }
+}
+
+@media(prefers-reduced-motion:reduce){
+ *,
+ *:before,
+ *:after{
+  animation-duration:.01ms!important;
+  animation-iteration-count:1!important;
+  scroll-behavior:auto!important;
+  transition-duration:.01ms!important
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar">
+
+<div class="brand">
+<div class="logo">I</div>
+
+<div>
+<strong>Inventory Pro</strong>
+<small>Business OS</small>
+</div>
+</div>
+
+<div class="nav-title">
+Workspace
+</div>
+
+<nav>
+
+<a href="index.html">
+<span>⌂</span>
+<span>Dashboard</span>
+</a>
+
+<a href="shop.html">
+<span>▣</span>
+<span>Shop & Products</span>
+</a>
+
+<a href="godown.html">
+<span>▤</span>
+<span>Godown</span>
+</a>
+
+<a class="active" href="billing.html">
+<span>▤</span>
+<span>Billing</span>
+</a>
+
+</nav>
+
+<div class="sidebar-bottom">
+
+<div class="user">
+
+<div class="avatar">A</div>
+
+<div>
+
+<strong style="font-size:11px">
+Admin
+</strong>
+
+<small style="
+display:block;
+color:var(--muted);
+font-size:10px
+">
+Administrator
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</aside>
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main>
+
+<header class="topbar">
+
+<div>
+
+<div class="eyebrow">
+Point of Sale · Main Warehouse
+</div>
+
+<h1>
+New Billing
+</h1>
+
+</div>
+
+<div class="actions">
+
+<button
+ class="icon-btn"
+ id="theme"
+ type="button"
+ aria-label="Toggle dark and light theme"
+ title="Toggle theme"
+>
+☾
+</button>
+
+</div>
+
+</header>
+
+<div class="layout">
+
+<!-- =========================
+     CUSTOMER / CART
+========================= -->
+
+<section class="card panel">
+
+<div class="panel-head">
+
+<div>
+
+<h2>
+Customer Details
+</h2>
+
+<small>
+Receipt information
+</small>
+
+</div>
+
+</div>
+
+<div class="customer-grid">
+
+<div class="field">
+
+<label>
+Customer Name
+</label>
+
+<input
+ id="customerName"
+ placeholder="Walk-in Customer"
+>
+
+</div>
+
+<div class="field">
+
+<label>
+Phone / WhatsApp
+</label>
+
+<input
+ id="customerPhone"
+ placeholder="+91 98765 43210"
+>
+
+</div>
+
+<div class="field full">
+
+<label>
+Scan Barcode / QR
+</label>
+
+<div class="scan">
+
+<input
+ id="barcode"
+ placeholder="Scan or enter product / SKU barcode..."
+ autocomplete="off"
+>
+
+<button
+ id="scanBtn"
+ type="button"
+>
+Scan
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+ class="scanned-product"
+ id="scannedProduct"
+>
+
+<div class="scanned-head">
+
+<div class="scanned-title">
+
+<div class="scanned-icon">
+▣
+</div>
+
+<div>
+
+<strong id="scannedName">
+Product
+</strong>
+
+<small id="scannedBarcode">
+Barcode
+</small>
+
+</div>
+
+</div>
+
+<span
+ class="type-badge"
+ id="scannedType"
+>
+PRODUCT
+</span>
+
+</div>
+
+<div class="product-details">
+
+<div class="detail-box">
+<label>AVAILABLE</label>
+<strong id="scannedQty">—</strong>
+</div>
+
+<div class="detail-box">
+<label>PRICE</label>
+<strong id="scannedPrice">—</strong>
+</div>
+
+<div class="detail-box">
+<label>BATCH</label>
+<strong id="scannedBatch">—</strong>
+</div>
+
+<div class="detail-box">
+<label>EXPIRY</label>
+<strong id="scannedExpiry">—</strong>
+</div>
+
+</div>
+
+<div
+ class="expiry-warning"
+ id="expiryWarning"
+></div>
+
+<div
+ class="bundle-products"
+ id="bundleProducts"
+>
+
+<h3>
+Box / Bundle Contents
+</h3>
+
+<div
+ class="bundle-product-list"
+ id="bundleProductList"
+></div>
+
+</div>
+
+<button
+ class="add-scanned"
+ id="addScanned"
+ type="button"
+>
+Add to Cart
+</button>
+
+</div>
+
+<div
+ class="panel-head"
+ style="margin-top:18px"
+>
+
+<div>
+
+<h2>
+Current Cart
+</h2>
+
+<small id="itemCount">
+0 items
+</small>
+
+</div>
+
+<button
+ class="icon-btn"
+ id="clear"
+ type="button"
+>
+×
+</button>
+
+</div>
+
+<div
+ class="cart-list"
+ id="cart"
+></div>
+
+</section>
+
+<!-- =========================
+     PAYMENT
+========================= -->
+
+<aside class="card panel">
+
+<div class="panel-head">
+
+<div>
+
+<h2>
+Payment Summary
+</h2>
+
+<small>
+Invoice <span id="invoiceNo"></span>
+</small>
+
+</div>
+
+</div>
+
+<div
+ class="summary"
+ style="border:0;margin:0;padding:0"
+>
+
+<div class="row">
+<span>Subtotal</span>
+<span id="subtotal">₹0.00</span>
+</div>
+
+<div class="row">
+<span>Discount</span>
+<span id="discount">₹0.00</span>
+</div>
+
+<div class="row">
+<span>Tax</span>
+<span id="tax">₹0.00</span>
+</div>
+
+<div class="row total">
+<span>Total</span>
+<span id="total">₹0.00</span>
+</div>
+
+</div>
+
+<div
+ class="field"
+ style="margin-top:18px"
+>
+
+<label>
+Payment Method
+</label>
+
+<div class="payments">
+
+<button
+ class="pay selected"
+ data-pay="Cash"
+ type="button"
+>
+Cash
+</button>
+
+<button
+ class="pay"
+ data-pay="UPI"
+ type="button"
+>
+UPI
+</button>
+
+<button
+ class="pay"
+ data-pay="Card"
+ type="button"
+>
+Card
+</button>
+
+</div>
+
+</div>
+
+<button
+ class="generate"
+ id="generate"
+ type="button"
+>
+Generate Invoice →
+</button>
+
+<button
+ class="generate"
+ type="button"
+ onclick="
+ if(window.InventoryPDF&&typeof InventoryPDF.generate==='function'){
+   InventoryPDF.generate();
+ }else{
+   alert('PDF integration is not available.');
+ }
+"
+>
+Generate PDF Receipt
+</button>
+
+<button
+ class="generate"
+ type="button"
+ onclick="
+ if(window.InventoryWhatsApp&&typeof InventoryWhatsApp.shareLastInvoice==='function'){
+   InventoryWhatsApp.shareLastInvoice();
+ }else{
+   alert('WhatsApp integration is not available.');
+ }
+"
+>
+Share via WhatsApp
+</button>
+
+<button
+ class="generate"
+ type="button"
+ onclick="
+ if(window.InventoryDrive&&typeof InventoryDrive.upload==='function'){
+   window.InventoryDrive.upload();
+ }else{
+   alert('Google Drive integration is not available.');
+ }
+"
+>
+Save to Google Drive
+</button>
+
+<div
+ class="notice"
+ id="notice"
+>
+Select products in Shop or scan a product / box barcode to begin.
+</div>
+
+</aside>
+
+</div>
+
+<!-- =========================
+     INVOICE PREVIEW
+========================= -->
+
+<section class="card invoice-preview">
+
+<div class="panel-head">
+
+<div>
+
+<h2>
+Live Invoice Preview
+</h2>
+
+<small>
+Customer-facing receipt
+</small>
+
+</div>
+
+</div>
+
+<div
+ class="receipt"
+ id="receipt"
+>
+
+<div class="receipt-head">
+
+<h3>
+INVENTORY PRO
+</h3>
+
+<small>
+Sales Invoice ·
+<span id="receiptInvoice"></span>
+</small>
+
+</div>
+
+<div style="margin-top:12px">
+
+<div class="receipt-line">
+
+<span>
+Customer
+</span>
+
+<strong id="receiptCustomer">
+Walk-in Customer
+</strong>
+
+</div>
+
+<div class="receipt-line">
+
+<span>
+Phone
+</span>
+
+<span id="receiptPhone">
+—
+</span>
+
+</div>
+
+<div class="receipt-line">
+
+<span>
+Payment
+</span>
+
+<span id="receiptPayment">
+Cash
+</span>
+
+</div>
+
+</div>
+
+<div
+ class="receipt-items"
+ id="receiptItems"
+></div>
+
+<div class="receipt-line">
+
+<span>
+Subtotal
+</span>
+
+<span id="rSubtotal">
+₹0.00
+</span>
+
+</div>
+
+<div class="receipt-line">
+
+<span>
+Tax
+</span>
+
+<span id="rTax">
+₹0.00
+</span>
+
+</div>
+
+<div class="receipt-line receipt-total">
+
+<span>
+TOTAL
+</span>
+
+<span id="rTotal">
+₹0.00
+</span>
+
+</div>
+
+<div class="receipt-foot">
+Thank you for shopping with us
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<!-- =========================
+     SCANNER
+========================= -->
+
+<div
+ class="scanner-modal"
+ id="scannerModal"
+>
+
+<div class="scanner-box">
+
+<div class="scanner-head">
+
+<strong>
+Scan Product / Box
+</strong>
+
+<button
+ class="icon-btn"
+ id="scannerClose"
+ type="button"
+>
+×
+</button>
+
+</div>
+
+<video
+ id="scannerVideo"
+ class="scanner-video"
+ autoplay
+ playsinline
+ muted
+></video>
+
+<div
+ class="scanner-status"
+ id="scannerStatus"
+>
+Point the camera at a barcode.
+</div>
+
+<div class="scanner-actions">
+
+<button
+ id="manualScan"
+ type="button"
+>
+Enter Barcode Manually
+</button>
+
+<button
+ id="stopScanner"
+ type="button"
+>
+Close Scanner
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   INVENTORY PRO — BILLING ENGINE
+========================================================= */
+
+const INVENTORY_KEY =
+ "inventory_data";
+
+const CART_KEY =
+ "inventory_cart";
+
+const MOVEMENT_KEY =
+ "inventory_movements";
+
+const MAIN_WAREHOUSE =
+ "Main Warehouse";
+
+
+/* =========================================================
+   DEFAULT DATA
+========================================================= */
+
+const seed = [
+
+ {
+  id:1,
+  name:"ABC Biscuit",
+  sku:"BIS001",
+  barcode:"89010001",
+  price:10,
+  stock:120,
+  min:20,
+  batch:"B-102",
+  expiry:"12 Aug 2026",
+  type:"product",
+  contents:[]
+ },
+
+ {
+  id:2,
+  name:"Fresh Milk",
+  sku:"MLK002",
+  barcode:"89010002",
+  price:35,
+  stock:48,
+  min:15,
+  batch:"M-44",
+  expiry:"13 Aug 2026",
+  type:"product",
+  contents:[]
+ },
+
+ {
+  id:3,
+  name:"Classic Chips",
+  sku:"CHP003",
+  barcode:"89010003",
+  price:20,
+  stock:8,
+  min:10,
+  batch:"C-81",
+  expiry:"30 Aug 2026",
+  type:"product",
+  contents:[]
+ },
+
+ {
+  id:4,
+  name:"Orange Juice",
+  sku:"JUI004",
+  barcode:"89010004",
+  price:80,
+  stock:32,
+  min:10,
+  batch:"J-21",
+  expiry:"16 Aug 2026",
+  type:"product",
+  contents:[]
+ },
+
+ {
+  id:5,
+  name:"Chocolate Bar",
+  sku:"CHO005",
+  barcode:"89010005",
+  price:50,
+  stock:65,
+  min:15,
+  batch:"CH-18",
+  expiry:"20 Sep 2026",
+  type:"product",
+  contents:[]
+ },
+
+ {
+  id:6,
+  name:"Cookie Pack",
+  sku:"CKP006",
+  barcode:"89010006",
+  price:45,
+  stock:4,
+  min:10,
+  batch:"C-19",
+  expiry:"14 Aug 2026",
+  type:"product",
+  contents:[]
+ }
+
+];
+
+
+/* =========================================================
+   LOAD INVENTORY
+========================================================= */
+
+let products;
+
+try{
+
+ products =
+  JSON.parse(
+   localStorage.getItem(
+    INVENTORY_KEY
+   ) || "null"
+  );
+
+}catch{
+
+ products=null;
+
+}
+
+if(
+ !Array.isArray(products)
+){
+
+ products =
+  seed.map(
+   product=>({...product})
+  );
+
+}
+
+
+/* =========================================================
+   NORMALIZE
+========================================================= */
+
+products =
+ products.map(
+  (product,index)=>({
+
+   ...product,
+
+   id:
+    product.id ??
+    Date.now()+index,
+
+   price:
+    Number(
+     product.price||0
+    ),
+
+   stock:
+    Number(
+     product.stock||0
+    ),
+
+   min:
+    Number(
+     product.min||10
+    ),
+
+   type:
+    product.type||
+    "product",
+
+   batch:
+    product.batch||
+    "",
+
+   expiry:
+    product.expiry||
+    "",
+
+   barcode:
+    product.barcode||
+    "",
+
+   sku:
+    product.sku||
+    "",
+
+   contents:
+    Array.isArray(
+     product.contents
+    )
+     ?product.contents
+     :[],
+
+   godown:
+    MAIN_WAREHOUSE
+
+  })
+ );
+
+
+function saveInventory(){
+
+ localStorage.setItem(
+  INVENTORY_KEY,
+  JSON.stringify(products)
+ );
+
+}
+
+saveInventory();
+
+
+/* =========================================================
+   CART
+========================================================= */
+
+let cart=[];
+
+try{
+
+ cart =
+  JSON.parse(
+   localStorage.getItem(
+    CART_KEY
+   )||"[]"
+  );
+
+}catch{
+
+ cart=[];
+
+}
+
+if(!Array.isArray(cart))
+ cart=[];
+
+cart =
+ cart
+  .filter(
+   item=>
+    products.some(
+     product=>
+      String(product.id)===
+      String(item.id)
+    )
+  )
+  .map(
+   item=>{
+
+    const product=
+     products.find(
+      p=>
+       String(p.id)===
+       String(item.id)
+     );
+
+    return{
+
+     id:product.id,
+     name:product.name,
+     price:Number(
+      product.price||0
+     ),
+     qty:Math.max(
+      1,
+      Number(item.qty||1)
+     ),
+     type:
+      product.type||
+      "product",
+     contents:
+      Array.isArray(
+       product.contents
+      )
+       ?product.contents
+       :[],
+     barcode:
+      product.barcode||"",
+     sku:
+      product.sku||"",
+     batch:
+      product.batch||"",
+     expiry:
+      product.expiry||""
+
+    };
+
+   }
+  );
+
+function saveCart(){
+
+ localStorage.setItem(
+  CART_KEY,
+  JSON.stringify(cart)
+ );
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+ return String(
+  value??""
+ ).replace(
+  /[&<>"']/g,
+  char=>({
+
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+
+  }[char])
+ );
+
+}
+
+function daysLeft(date){
+
+ if(!date)
+  return 9999;
+
+ const value=
+  new Date(date);
+
+ if(
+  isNaN(
+   value.getTime()
+  )
+ )
+  return 9999;
+
+ const today=
+  new Date();
+
+ today.setHours(
+  0,0,0,0
+ );
+
+ value.setHours(
+  0,0,0,0
+ );
+
+ return Math.ceil(
+  (value-today)/
+  86400000
+ );
+
+}
+
+function getProductById(id){
+
+ return products.find(
+  product=>
+   String(product.id)===
+   String(id)
+ );
+
+}
+
+function findBarcode(code){
+
+ const value=
+  String(code||"").trim();
+
+ if(!value)
+  return null;
+
+ return products.find(
+  product=>
+   String(
+    product.barcode||""
+   ).trim()===
+   value||
+   String(
+    product.sku||""
+   ).trim().toLowerCase()===
+   value.toLowerCase()
+ )||null;
+
+}
+
+function getBundleProducts(bundle){
+
+ if(
+  bundle.type!=="bundle"||
+  !Array.isArray(
+   bundle.contents
+  )
+ )
+  return[];
+
+ return bundle.contents
+  .map(
+   content=>{
+
+    const child=
+     products.find(
+      product=>
+       product.sku===
+        content.productSku||
+       product.barcode===
+        content.productBarcode
+     );
+
+    if(!child)
+     return null;
+
+    return{
+
+     product:child,
+
+     quantity:Number(
+      content.quantityPerBundle||0
+     )
+
+    };
+
+   }
+  )
+  .filter(Boolean);
+
+}
+
+function setNotice(
+ message,
+ type=""
+){
+
+ const notice=
+  document.getElementById(
+   "notice"
+  );
+
+ notice.textContent=
+  message;
+
+ notice.className=
+  "notice";
+
+ if(type)
+  notice.classList.add(
+   type
+  );
+
+}
+
+
+/* =========================================================
+   INVOICE
+========================================================= */
+
+function createInvoiceNumber(){
+
+ return(
+  "INV-"+
+  String(
+   Date.now()
+  ).slice(-6)
+ );
+
+}
+
+let invoice=
+ createInvoiceNumber();
+
+let payment="Cash";
+let selectedProduct=null;
+let saleCommitted=false;
+
+document.getElementById(
+ "invoiceNo"
+).textContent=
+ invoice;
+
+document.getElementById(
+ "receiptInvoice"
+).textContent=
+ invoice;
+
+const barcodeInput=
+ document.getElementById(
+  "barcode"
+);
+
+const cartBox=
+ document.getElementById(
+  "cart"
+);
+
+
+/* =========================================================
+   PRODUCT DISPLAY
+========================================================= */
+
+function showProduct(product){
+
+ if(!product)
+  return;
+
+ selectedProduct=
+  product;
+
+ document.getElementById(
+  "scannedProduct"
+ ).classList.add(
+  "show"
+ );
+
+ document.getElementById(
+  "scannedName"
+ ).textContent=
+  product.name||
+  "Product";
+
+ document.getElementById(
+  "scannedBarcode"
+ ).textContent=
+  `Barcode: ${
+   product.barcode||"—"
+  } · SKU: ${
+   product.sku||"—"
+  }`;
+
+ document.getElementById(
+  "scannedType"
+ ).textContent=
+  product.type==="bundle"
+   ?"BOX / BUNDLE"
+   :"PRODUCT";
+
+ document.getElementById(
+  "scannedQty"
+ ).textContent=
+  `${product.stock} ${
+   product.type==="bundle"
+    ?"boxes"
+    :"units"
+  }`;
+
+ document.getElementById(
+  "scannedPrice"
+ ).textContent=
+  `₹${Number(
+   product.price||0
+  ).toFixed(2)}`;
+
+ document.getElementById(
+  "scannedBatch"
+ ).textContent=
+  product.batch||"—";
+
+ document.getElementById(
+  "scannedExpiry"
+ ).textContent=
+  product.expiry||"—";
+
+ const warning=
+  document.getElementById(
+   "expiryWarning"
+  );
+
+ warning.className=
+  "expiry-warning";
+
+ const days=
+  daysLeft(
+   product.expiry
+  );
+
+ if(
+  product.expiry&&
+  days<=0
+ ){
+
+  warning.textContent=
+   `${product.name} is expired. Sale is blocked.`;
+
+  warning.classList.add(
+   "show",
+   "danger"
+  );
+
+ }else if(
+  product.expiry&&
+  days<=3
+ ){
+
+  warning.textContent=
+   `${product.name} expires in ${days} day${days===1?"":"s"}.`;
+
+  warning.classList.add(
+   "show"
+  );
+
+ }
+
+ const bundleBox=
+  document.getElementById(
+   "bundleProducts"
+ );
+
+ const bundleList=
+  document.getElementById(
+   "bundleProductList"
+ );
+
+ if(
+  product.type==="bundle"
+ ){
+
+  bundleBox.style.display=
+   "block";
+
+  const contents=
+   getBundleProducts(
+    product
+   );
+
+  bundleList.innerHTML=
+   contents.length
+    ?contents.map(
+      entry=>`
+
+       <div class="bundle-product">
+
+        <div>
+         <strong>
+          ${escapeHTML(
+           entry.product.name
+          )}
+         </strong>
+
+         <span>
+          ${escapeHTML(
+           entry.product.sku||""
+          )}
+         </span>
+        </div>
+
+        <span>
+         Qty: ${entry.quantity}
+        </span>
+
+        <span>
+         ₹${Number(
+          entry.product.price||0
+         ).toFixed(2)}
+        </span>
+
+        <span>
+         ${escapeHTML(
+          entry.product.expiry||"—"
+         )}
+        </span>
+
+       </div>
+
+      `
+     ).join("")
+    :
+     `<div class="empty">
+       No bundle contents found.
+      </div>`;
+
+ }else{
+
+  bundleBox.style.display=
+   "none";
+
+  bundleList.innerHTML=
+   "";
+
+ }
+
+ const addButton=
+  document.getElementById(
+   "addScanned"
+  );
+
+ if(
+  Number(product.stock)<=0
+ ){
+
+  addButton.disabled=
+   true;
+
+  addButton.textContent=
+   "Out of Stock";
+
+ }else if(
+  product.expiry&&
+  days<=0
+ ){
+
+  addButton.disabled=
+   true;
+
+  addButton.textContent=
+   "Expired — Sale Blocked";
+
+ }else{
+
+  addButton.disabled=
+   false;
+
+  addButton.textContent=
+   "Add to Cart";
+
+ }
+
+}
+
+
+/* =========================================================
+   BUNDLE VALIDATION
+========================================================= */
+
+function validateBundle(
+ product,
+ quantity
+){
+
+ if(
+  product.type!=="bundle"
+ )
+  return null;
+
+ const contents=
+  getBundleProducts(
+   product
+  );
+
+ if(
+  contents.length!==
+  product.contents.length
+ )
+  return(
+   `Bundle contents for ${product.name} are incomplete.`
+  );
+
+ for(
+  const entry of contents
+ ){
+
+  const required=
+   entry.quantity*
+   Number(quantity);
+
+  if(
+   Number(
+    entry.product.stock
+   )<
+   required
+  ){
+
+   return(
+    `${product.name} requires ${required} ${entry.product.name}, but only ${entry.product.stock} are available.`
+   );
+
+  }
+
+  if(
+   entry.product.expiry&&
+   daysLeft(
+    entry.product.expiry
+   )<=0
+  ){
+
+   return(
+    `${entry.product.name} inside ${product.name} is expired.`
+   );
+
+  }
+
+ }
+
+ return null;
+
+}
+
+
+/* =========================================================
+   ADD TO CART
+========================================================= */
+
+function addProductToCart(
+ product
+){
+
+ if(!product)
+  return false;
+
+ if(saleCommitted){
+
+  setNotice(
+   "Invoice already completed. Start a new billing session.",
+   "warning"
+  );
+
+  return false;
+
+ }
+
+ if(
+  Number(product.stock)<=0
+ ){
+
+  setNotice(
+   `${product.name} is out of stock.`,
+   "danger"
+  );
+
+  return false;
+
+ }
+
+ if(
+  product.expiry&&
+  daysLeft(
+   product.expiry
+  )<=0
+ ){
+
+  setNotice(
+   `${product.name} is expired and cannot be sold.`,
+   "danger"
+  );
+
+  return false;
+
+ }
+
+ const existing=
+  cart.find(
+   item=>
+    String(item.id)===
+    String(product.id)
+  );
+
+ const nextQuantity=
+  existing
+   ?Number(existing.qty)+1
+   :1;
+
+ if(
+  nextQuantity>
+  Number(product.stock)
+ ){
+
+  setNotice(
+   `Only ${product.stock} available.`,
+   "warning"
+  );
+
+  return false;
+
+ }
+
+ const bundleError=
+  validateBundle(
+   product,
+   nextQuantity
+  );
+
+ if(bundleError){
+
+  setNotice(
+   bundleError,
+   "danger"
+  );
+
+  alert(
+   bundleError
+  );
+
+  return false;
+
+ }
+
+ if(existing){
+
+  existing.qty=
+   nextQuantity;
+
+ }else{
+
+  cart.push({
+
+   id:product.id,
+   name:product.name,
+   price:Number(
+    product.price||0
+   ),
+   qty:1,
+   type:
+    product.type||
+    "product",
+   contents:
+    product.contents||[],
+   barcode:
+    product.barcode||"",
+   sku:
+    product.sku||"",
+   batch:
+    product.batch||"",
+   expiry:
+    product.expiry||""
+
+  });
+
+ }
+
+ saveCart();
+ render();
+
+ return true;
+
+}
+
+document.getElementById(
+ "addScanned"
+).onclick=()=>{
+
+ if(
+  addProductToCart(
+   selectedProduct
+  )
+ ){
+
+  barcodeInput.value=
+   "";
+
+  setNotice(
+   `${selectedProduct.name} added to cart.`,
+   "success"
+  );
+
+ }
+
+};
+
+
+/* =========================================================
+   BARCODE
+========================================================= */
+
+function processBarcode(
+ code
+){
+
+ const product=
+  findBarcode(
+   code
+  );
+
+ if(!product){
+
+  setNotice(
+   `No product found for "${code}".`,
+   "danger"
+  );
+
+  alert(
+   `Product / SKU not found:\n${code}`
+  );
+
+  return;
+
+ }
+
+ showProduct(
+  product
+ );
+
+ setNotice(
+  `${product.name} found. Review and add it to your cart.`,
+  "success"
+ );
+
+}
+
+barcodeInput.addEventListener(
+ "keydown",
+ event=>{
+
+  if(
+   event.key!=="Enter"
+  )
+   return;
+
+  const value=
+   barcodeInput.value.trim();
+
+  if(value)
+   processBarcode(
+    value
+   );
+
+ }
+);
+
+
+/* =========================================================
+   CART QUANTITY
+========================================================= */
+
+function changeQty(
+ id,
+ delta
+){
+
+ if(saleCommitted)
+  return;
+
+ const item=
+  cart.find(
+   entry=>
+    String(entry.id)===
+    String(id)
+  );
+
+ const product=
+  getProductById(
+   id
+  );
+
+ if(!item||!product)
+  return;
+
+ const next=
+  Number(item.qty)+
+  Number(delta);
+
+ if(next<=0){
+
+  cart=
+   cart.filter(
+    entry=>
+     String(entry.id)!==
+     String(id)
+   );
+
+  saveCart();
+  render();
+
+  return;
+
+ }
+
+ if(
+  next>
+  Number(product.stock)
+ ){
+
+  alert(
+   `Only ${product.stock} available.`
+  );
+
+  return;
+
+ }
+
+ const bundleError=
+  validateBundle(
+   product,
+   next
+  );
+
+ if(bundleError){
+
+  alert(
+   bundleError
+  );
+
+  return;
+
+ }
+
+ item.qty=
+  next;
+
+ saveCart();
+ render();
+
+}
+
+window.changeQty=
+ changeQty;
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function render(){
+
+ if(!cart.length){
+
+  cartBox.innerHTML=`
+   <div class="empty">
+    No products in cart.<br><br>
+    Select products in Shop or scan a barcode.
+   </div>
+  `;
+
+ }else{
+
+  cartBox.innerHTML=
+   cart.map(
+    item=>{
+
+     const product=
+      getProductById(
+       item.id
+      );
+
+     if(!product)
+      return"";
+
+     return`
+
+      <div class="item">
+
+       <div class="item-info">
+
+        <strong>
+         ${escapeHTML(
+          product.name
+         )}
+        </strong>
+
+        <small>
+         ₹${Number(
+          product.price||0
+         ).toFixed(2)}
+         each
+        </small>
+
+        <small>
+         SKU:
+         ${escapeHTML(
+          product.sku||"—"
+         )}
+        </small>
+
+       </div>
+
+       <div class="qty">
+
+        <button
+         onclick="
+          changeQty(
+           ${JSON.stringify(
+            item.id
+           )},
+           -1
+          )
+         "
+        >
+         −
+        </button>
+
+        <span>
+         ${item.qty}
+        </span>
+
+        <button
+         onclick="
+          changeQty(
+           ${JSON.stringify(
+            item.id
+           )},
+           1
+          )
+         "
+        >
+         +
+        </button>
+
+       </div>
+
+      </div>
+
+     `;
+
+    }
+   ).join("");
+
+ }
+
+ const subtotal=
+  cart.reduce(
+   (sum,item)=>{
+
+    const product=
+     getProductById(
+      item.id
+     );
+
+    return(
+     sum+
+     Number(
+      product?.price||0
+     )*
+     Number(
+      item.qty||0
+     )
+    );
+
+   },
+   0
+  );
+
+ const discount=0;
+ const tax=0;
+ const total=
+  subtotal-
+  discount+
+  tax;
+
+ const count=
+  cart.reduce(
+   (sum,item)=>
+    sum+
+    Number(
+     item.qty||0
+    ),
+   0
+  );
+
+ document.getElementById(
+  "subtotal"
+ ).textContent=
+  `₹${subtotal.toFixed(2)}`;
+
+ document.getElementById(
+  "discount"
+ ).textContent=
+  `₹${discount.toFixed(2)}`;
+
+ document.getElementById(
+  "tax"
+ ).textContent=
+  `₹${tax.toFixed(2)}`;
+
+ document.getElementById(
+  "total"
+ ).textContent=
+  `₹${total.toFixed(2)}`;
+
+ document.getElementById(
+  "itemCount"
+ ).textContent=
+  `${count} item${
+   count===1?"":"s"
+  }`;
+
+ document.getElementById(
+  "receiptCustomer"
+ ).textContent=
+  document.getElementById(
+   "customerName"
+  ).value.trim()||
+  "Walk-in Customer";
+
+ document.getElementById(
+  "receiptPhone"
+ ).textContent=
+  document.getElementById(
+   "customerPhone"
+  ).value.trim()||
+  "—";
+
+ document.getElementById(
+  "receiptPayment"
+ ).textContent=
+  payment;
+
+ document.getElementById(
+  "rSubtotal"
+ ).textContent=
+  `₹${subtotal.toFixed(2)}`;
+
+ document.getElementById(
+  "rTax"
+ ).textContent=
+  `₹${tax.toFixed(2)}`;
+
+ document.getElementById(
+  "rTotal"
+ ).textContent=
+  `₹${total.toFixed(2)}`;
+
+ document.getElementById(
+  "receiptItems"
+ ).innerHTML=
+  cart.length
+   ?cart.map(
+     item=>{
+
+      const product=
+       getProductById(
+        item.id
+       );
+
+      return`
+
+       <div class="receipt-line">
+
+        <span>
+         ${escapeHTML(
+          product.name
+         )}
+         × ${item.qty}
+        </span>
+
+        <span>
+         ₹${(
+          Number(
+           product.price||0
+          )*
+          Number(
+           item.qty||0
+          )
+         ).toFixed(2)}
+        </span>
+
+       </div>
+
+      `;
+
+     }
+    ).join("")
+   :
+    `
+     <div style="
+      font-size:10px;
+      color:var(--muted);
+      text-align:center;
+      padding:8px
+     ">
+      No items
+     </div>
+    `;
+
+}
+
+
+/* =========================================================
+   INPUT EVENTS
+========================================================= */
+
+document.getElementById(
+ "customerName"
+).oninput=
+ render;
+
+document.getElementById(
+ "customerPhone"
+).oninput=
+ render;
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+document.querySelectorAll(
+ ".pay"
+).forEach(
+ button=>{
+
+  button.onclick=()=>{
+
+   if(saleCommitted)
+    return;
+
+   document.querySelectorAll(
+    ".pay"
+   ).forEach(
+    item=>
+     item.classList.remove(
+      "selected"
+     )
+   );
+
+   button.classList.add(
+    "selected"
+   );
+
+   payment=
+    button.dataset.pay;
+
+   render();
+
+  };
+
+ }
+);
+
+
+/* =========================================================
+   CLEAR CART
+========================================================= */
+
+document.getElementById(
+ "clear"
+).onclick=()=>{
+
+ if(saleCommitted){
+
+  startNewBillingSession();
+
+  return;
+
+ }
+
+ cart=[];
+
+ saveCart();
+
+ selectedProduct=
+  null;
+
+ document.getElementById(
+  "scannedProduct"
+ ).classList.remove(
+  "show"
+ );
+
+ setNotice(
+  "Cart cleared.",
+  "success"
+ );
+
+ render();
+
+};
+
+
+/* =========================================================
+   SALE VALIDATION
+========================================================= */
+
+function validateSale(){
+
+ if(!cart.length)
+  return"Cart is empty.";
+
+ const childRequirements=
+  new Map();
+
+ for(
+  const item of cart
+ ){
+
+  const product=
+   getProductById(
+    item.id
+   );
+
+  if(!product)
+   return`${item.name} no longer exists.`;
+
+  if(
+   Number(product.stock)<
+   Number(item.qty)
+  ){
+
+   return(
+    `${product.name}: only ${product.stock} available.`
+   );
+
+  }
+
+  if(
+   product.expiry&&
+   daysLeft(
+    product.expiry
+   )<=0
+  ){
+
+   return(
+    `${product.name} is expired.`
+   );
+
+  }
+
+  if(
+   product.type==="bundle"
+  ){
+
+   const contents=
+    getBundleProducts(
+     product
+    );
+
+   if(
+    contents.length!==
+    product.contents.length
+   ){
+
+    return(
+     `Bundle contents for ${product.name} are incomplete.`
+    );
+
+   }
+
+   for(
+    const entry of contents
+   ){
+
+    const required=
+     entry.quantity*
+     Number(item.qty);
+
+    const key=
+     String(
+      entry.product.id
+     );
+
+    childRequirements.set(
+     key,
+     (
+      childRequirements.get(
+       key
+      )||0
+     )+
+     required
+    );
+
+    if(
+     entry.product.expiry&&
+     daysLeft(
+      entry.product.expiry
+     )<=0
+    ){
+
+     return(
+      `${entry.product.name} inside ${product.name} is expired.`
+     );
+
+    }
+
+   }
+
+  }
+
+ }
+
+ for(
+  const [
+   childId,
+   required
+  ]
+  of childRequirements
+ ){
+
+  const child=
+   getProductById(
+    childId
+   );
+
+  if(
+   child&&
+   Number(child.stock)<
+   Number(required)
+  ){
+
+   return(
+    `Bundle requires ${required} ${child.name}, but only ${child.stock} are available.`
+   );
+
+  }
+
+ }
+
+ return null;
+
+}
+
+
+/* =========================================================
+   COMMIT SALE
+========================================================= */
+
+function commitSale(){
+
+ if(saleCommitted)
+  return false;
+
+ const error=
+  validateSale();
+
+ if(error){
+
+  setNotice(
+   error,
+   "danger"
+  );
+
+  alert(error);
+
+  return false;
+
+ }
+
+ let movements=[];
+
+ try{
+
+  movements=
+   JSON.parse(
+    localStorage.getItem(
+     MOVEMENT_KEY
+    )||"[]"
+   );
+
+ }catch{
+
+  movements=[];
+
+ }
+
+ if(!Array.isArray(
+  movements
+ ))
+  movements=[];
+
+ const now=
+  new Date().toISOString();
+
+ const childDeductions=
+  new Map();
+
+ for(
+  const item of cart
+ ){
+
+  const product=
+   getProductById(
+    item.id
+   );
+
+  const quantity=
+   Number(
+    item.qty
+   );
+
+  product.stock=
+   Number(
+    product.stock
+   )-
+   quantity;
+
+  product.godown=
+   MAIN_WAREHOUSE;
+
+  movements.push({
+
+   type:"out",
+
+   name:
+    product.name,
+
+   qty:
+    quantity,
+
+   source:
+    `Sale ${invoice}`,
+
+   time:
+    now,
+
+   barcode:
+    product.barcode||"",
+
+   sku:
+    product.sku||"",
+
+   godown:
+    MAIN_WAREHOUSE,
+
+   warehouse:
+    MAIN_WAREHOUSE,
+
+   invoice
+
+  });
+
+  if(
+   product.type==="bundle"
+  ){
+
+   for(
+    const content
+    of product.contents||[]
+   ){
+
+    const child=
+     products.find(
+      p=>
+       p.sku===
+        content.productSku||
+       p.barcode===
+        content.productBarcode
+     );
+
+    if(!child)
+     continue;
+
+    const required=
+     Number(
+      content.quantityPerBundle||0
+     )*
+     quantity;
+
+    const key=
+     String(
+      child.id
+     );
+
+    childDeductions.set(
+     key,
+     (
+      childDeductions.get(
+       key
+      )||0
+     )+
+     required
+    );
+
+   }
+
+  }
+
+ }
+
+ for(
+  const [
+   childId,
+   quantity
+  ]
+  of childDeductions
+ ){
+
+  const child=
+   getProductById(
+    childId
+   );
+
+  if(!child)
+   continue;
+
+  child.stock=
+   Number(
+    child.stock
+   )-
+   Number(
+    quantity
+   );
+
+  child.godown=
+   MAIN_WAREHOUSE;
+
+  movements.push({
+
+   type:"out",
+
+   name:
+    child.name,
+
+   qty:
+    Number(quantity),
+
+   source:
+    `Bundle contents · ${invoice}`,
+
+   time:
+    now,
+
+   barcode:
+    child.barcode||"",
+
+   sku:
+    child.sku||"",
+
+   godown:
+    MAIN_WAREHOUSE,
+
+   warehouse:
+    MAIN_WAREHOUSE,
+
+   invoice
+
+  });
+
+ }
+
+ localStorage.setItem(
+  MOVEMENT_KEY,
+  JSON.stringify(
+   movements.slice(-500)
+  )
+ );
+
+ saveInventory();
+
+ saleCommitted=true;
+
+ return true;
+
+}
+
+
+/* =========================================================
+   CREATE SALE
+========================================================= */
+
+function createSale(
+ items
+){
+
+ return{
+
+  invoice,
+
+  warehouse:
+   MAIN_WAREHOUSE,
+
+  customer:
+   document.getElementById(
+    "customerName"
+   ).value.trim()||
+   "Walk-in Customer",
+
+  phone:
+   document.getElementById(
+    "customerPhone"
+   ).value.trim(),
+
+  payment,
+
+  items,
+
+  createdAt:
+   new Date().toISOString()
+
+ };
+
+}
+
+
+/* =========================================================
+   GENERATE INVOICE
+========================================================= */
+
+document.getElementById(
+ "generate"
+).onclick=()=>{
+
+ if(saleCommitted){
+
+  setNotice(
+   `${invoice} has already been generated.`,
+   "warning"
+  );
+
+  return;
+
+ }
+
+ if(!cart.length){
+
+  setNotice(
+   "Add at least one product before generating the invoice.",
+   "warning"
+  );
+
+  return;
+
+ }
+
+ const saleItems=
+  cart.map(
+   item=>({...item})
+  );
+
+ if(!commitSale())
+  return;
+
+ const sale=
+  createSale(
+   saleItems
+  );
+
+ localStorage.setItem(
+  "last_invoice",
+  JSON.stringify(
+   sale
+  )
+ );
+
+ setNotice(
+  `✓ ${invoice} created · ${payment} · Main Warehouse stock updated.`,
+  "success"
+ );
+
+ render();
+
+ const button=
+  document.getElementById(
+   "generate"
+  );
+
+ button.textContent=
+  "Invoice Generated ✓";
+
+ button.disabled=
+  true;
+
+};
+
+
+/* =========================================================
+   NEW BILLING SESSION
+========================================================= */
+
+function startNewBillingSession(){
+
+ cart=[];
+ selectedProduct=null;
+ payment="Cash";
+ saleCommitted=false;
+
+ invoice=
+  createInvoiceNumber();
+
+ document.getElementById(
+  "invoiceNo"
+ ).textContent=
+  invoice;
+
+ document.getElementById(
+  "receiptInvoice"
+ ).textContent=
+  invoice;
+
+ document.getElementById(
+  "generate"
+ ).textContent=
+  "Generate Invoice →";
+
+ document.getElementById(
+  "generate"
+ ).disabled=
+  false;
+
+ document.getElementById(
+  "scannedProduct"
+ ).classList.remove(
+  "show"
+ );
+
+ document.getElementById(
+  "customerName"
+ ).value=
+  "";
+
+ document.getElementById(
+  "customerPhone"
+ ).value=
+  "";
+
+ barcodeInput.value=
+  "";
+
+ document.querySelectorAll(
+  ".pay"
+ ).forEach(
+  button=>
+   button.classList.remove(
+    "selected"
+   )
+ );
+
+ document.querySelector(
+  '.pay[data-pay="Cash"]'
+ ).classList.add(
+  "selected"
+ );
+
+ saveCart();
+
+ setNotice(
+  "New billing session ready.",
+  "success"
+ );
+
+ render();
+
+}
+
+
+/* =========================================================
+   THEME — FIXED
+========================================================= */
+
+function applyBillingTheme(
+ themeName
+){
+
+ const isLight=
+  themeName==="light";
+
+ document.body.classList.toggle(
+  "light",
+  isLight
+ );
+
+ const themeButton=
+  document.getElementById(
+   "theme"
+  );
+
+ if(themeButton){
+
+  themeButton.textContent=
+   isLight
+    ?"☀"
+    :"☾";
+
+  themeButton.setAttribute(
+   "aria-label",
+   isLight
+    ?"Switch to dark theme"
+    :"Switch to light theme"
+  );
+
+ }
+
+ localStorage.setItem(
+  "inventory_theme",
+  isLight
+   ?"light"
+   :"dark"
+ );
+
+}
+
+function toggleBillingTheme(){
+
+ const current=
+  document.body.classList.contains(
+   "light"
+  )
+   ?"light"
+   :"dark";
+
+ applyBillingTheme(
+  current==="light"
+   ?"dark"
+   :"light"
+ );
+
+}
+
+document.addEventListener(
+ "DOMContentLoaded",
+ ()=>{
+
+  const saved=
+   localStorage.getItem(
+    "inventory_theme"
+   );
+
+  applyBillingTheme(
+   saved==="light"
+    ?"light"
+    :"dark"
+  );
+
+  const themeButton=
+   document.getElementById(
+    "theme"
+   );
+
+  if(themeButton){
+
+   themeButton.onclick=
+    toggleBillingTheme;
+
+  }
+
+ }
+);
+
+
+/* =========================================================
+   SHARED BILLING API
+========================================================= */
+
+window.InventoryShared={
+
+ get:
+  ()=>products,
+
+ findBarcode,
+
+ processBarcode,
+
+ getCart:
+  ()=>cart,
+
+ refresh:
+  ()=>{
+
+   try{
+
+    const stored=
+     JSON.parse(
+      localStorage.getItem(
+       INVENTORY_KEY
+      )||"[]"
+     );
+
+    if(
+     Array.isArray(
+      stored
+     )
+    ){
+
+     products=
+      stored.map(
+       (product,index)=>({
+
+        ...product,
+
+        id:
+         product.id ??
+         Date.now()+index,
+
+        price:
+         Number(
+          product.price||0
+         ),
+
+        stock:
+         Number(
+          product.stock||0
+         ),
+
+        godown:
+         MAIN_WAREHOUSE,
+
+        contents:
+         Array.isArray(
+          product.contents
+         )
+          ?product.contents
+          :[]
+
+       })
+      );
+
+     saveInventory();
+
+    }
+
+   }catch{}
+
+   render();
+
+  }
+
+};
+
+
+/* =========================================================
+   STORAGE SYNC
+========================================================= */
+
+window.addEventListener(
+ "storage",
+ event=>{
+
+  if(
+   event.key===
+    INVENTORY_KEY||
+   event.key===
+    CART_KEY
+  ){
+
+   window.InventoryShared.refresh();
+
+  }
+
+ }
+);
+
+
+/* =========================================================
+   CAMERA SCANNER
+========================================================= */
+
+const scannerModal=
+ document.getElementById(
+  "scannerModal"
+ );
+
+const scannerVideo=
+ document.getElementById(
+  "scannerVideo"
+ );
+
+const scannerStatus=
+ document.getElementById(
+  "scannerStatus"
+ );
+
+let scannerStream=null;
+let scannerRunning=false;
+let barcodeDetector=null;
+
+function stopScanner(){
+
+ scannerRunning=false;
+
+ if(scannerStream){
+
+  scannerStream
+   .getTracks()
+   .forEach(
+    track=>
+     track.stop()
+   );
+
+ }
+
+ scannerStream=null;
+ scannerVideo.srcObject=
+  null;
+
+ scannerModal.classList.remove(
+  "show"
+ );
+
+}
+
+async function openScanner(){
+
+ scannerModal.classList.add(
+  "show"
+ );
+
+ scannerStatus.textContent=
+  "Starting camera...";
+
+ if(
+  !navigator.mediaDevices||
+  !navigator.mediaDevices.getUserMedia
+ ){
+
+  scannerStatus.textContent=
+   "Camera unavailable. Use manual entry.";
+
+  return;
+
+ }
+
+ if(
+  !("BarcodeDetector" in window)
+ ){
+
+  scannerStatus.textContent=
+   "Barcode detection unavailable. Use manual entry.";
+
+  return;
+
+ }
+
+ try{
+
+  barcodeDetector=
+   new BarcodeDetector({
+
+    formats:[
+     "ean_13",
+     "ean_8",
+     "code_128",
+     "code_39",
+     "upc_a",
+     "upc_e",
+     "qr_code"
+    ]
+
+   });
+
+ }catch{
+
+  scannerStatus.textContent=
+   "Barcode detection unavailable. Use manual entry.";
+
+  return;
+
+ }
+
+ try{
+
+  scannerStream=
+   await navigator.mediaDevices.getUserMedia({
+
+    video:{
+     facingMode:{
+      ideal:"environment"
+     }
+    },
+
+    audio:false
+
+   });
+
+  scannerVideo.srcObject=
+   scannerStream;
+
+  await scannerVideo.play();
+
+  scannerRunning=true;
+
+  scannerStatus.textContent=
+   "Camera active. Point at a barcode.";
+
+  scanFrame();
+
+ }catch{
+
+  scannerStatus.textContent=
+   "Camera permission denied or unavailable.";
+
+ }
+
+}
+
+async function scanFrame(){
+
+ if(
+  !scannerRunning||
+  !barcodeDetector
+ )
+  return;
+
+ try{
+
+  if(
+   scannerVideo.readyState>=
+   HTMLMediaElement.HAVE_ENOUGH_DATA
+  ){
+
+   const results=
+    await barcodeDetector.detect(
+     scannerVideo
+    );
+
+   if(
+    results&&
+    results.length&&
+    results[0].rawValue
+   ){
+
+    const value=
+     results[0].rawValue;
+
+    stopScanner();
+
+    processBarcode(
+     value
+    );
+
+    return;
+
+   }
+
+  }
+
+ }catch{}
+
+ if(scannerRunning){
+
+  requestAnimationFrame(
+   scanFrame
+  );
+
+ }
+
+}
+
+document.getElementById(
+ "scanBtn"
+).onclick=
+ openScanner;
+
+document.getElementById(
+ "scannerClose"
+).onclick=
+ stopScanner;
+
+document.getElementById(
+ "stopScanner"
+).onclick=
+ stopScanner;
+
+document.getElementById(
+ "manualScan"
+).onclick=()=>{
+
+ const code=
+  prompt(
+   "Enter barcode or SKU:"
+  );
+
+ if(
+  code&&
+  code.trim()
+ ){
+
+  processBarcode(
+   code.trim()
+  );
+
+ }
+
+};
+
+scannerModal.addEventListener(
+ "click",
+ event=>{
+
+  if(
+   event.target===
+   scannerModal
+  ){
+
+   stopScanner();
+
+  }
+
+ }
+);
+
+
+/* =========================================================
+   INITIAL RENDER
+========================================================= */
+
+render();
+
+if(cart.length){
+
+ setNotice(
+  `${cart.length} product${
+   cart.length===1
+    ?""
+    :"s"
+  } loaded from Shop cart. Ready for billing.`,
+  "success"
+ );
+
+}
+
+</script>
+
+<script src="pdf.js"></script>
+<script src="whatsapp.js"></script>
+<script src="drive.js"></script>
+
+</body>
+</html>

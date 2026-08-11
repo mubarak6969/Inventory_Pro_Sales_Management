@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login | Inventory Pro</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08090d;--card:rgba(255,255,255,.07);--text:#f5f7fb;--muted:#969baa;--line:rgba(255,255,255,.1);--accent:#7c5cff}
+body{min-height:100vh;background:radial-gradient(circle at 20% 20%,#24175c 0,transparent 35%),radial-gradient(circle at 80% 80%,#063d48 0,transparent 35%),var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;display:grid;place-items:center;overflow:hidden}
+body:before{content:"";position:fixed;width:420px;height:420px;border-radius:50%;background:#7c5cff33;filter:blur(100px);top:-120px;right:-100px}
+.card{width:min(430px,92%);padding:38px;border:1px solid var(--line);background:var(--card);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:28px;box-shadow:0 30px 80px #0008}
+.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#8d72ff,#4f3ccf);display:grid;place-items:center;font-size:24px;font-weight:800;margin-bottom:25px;box-shadow:0 10px 30px #7c5cff55}
+h1{font-size:30px;letter-spacing:-1px;margin-bottom:8px}
+.sub{color:var(--muted);margin-bottom:30px}
+label{display:block;font-size:13px;font-weight:600;margin:18px 0 8px}
+input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:13px;background:#ffffff08;color:white;outline:none;font-size:15px;transition:.2s}
+input:focus{border-color:#8d72ff;box-shadow:0 0 0 4px #7c5cff18}
+button{width:100%;border:0;padding:15px;border-radius:14px;margin-top:25px;background:linear-gradient(135deg,#8d72ff,#6048e8);color:white;font-size:15px;font-weight:700;cursor:pointer;transition:.2s}
+button:hover{transform:translateY(-2px);box-shadow:0 12px 30px #7c5cff44}
+.status{text-align:center;color:#ff7d7d;font-size:13px;margin-top:14px;min-height:18px}
+.footer{text-align:center;color:#6f7480;font-size:12px;margin-top:25px}
+</style>
+</head>
+
+<body>
+<main class="card">
+  <div class="logo">I</div>
+
+  <h1>Welcome back</h1>
+  <p class="sub">Inventory & Sales Management</p>
+
+  <form id="loginForm">
+    <label>Email</label>
+    <input id="email" type="email" placeholder="admin@shop.com" required>
+
+    <label>Password</label>
+    <input id="password" type="password" placeholder="••••••••" required>
+
+    <button type="submit">Sign in →</button>
+    <div class="status" id="status"></div>
+  </form>
+
+  <div class="footer">Secure business workspace</div>
+</main>
+
+<script>
+const form=document.getElementById("loginForm");
+const status=document.getElementById("status");
+
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+
+  if(!email||!password){
+    status.textContent="Enter your login details.";
+    return;
+  }
+
+  /*
+    Temporary frontend flow.
+    Backend authentication will replace this.
+  */
+  localStorage.setItem("inventory_user",JSON.stringify({
+    email,
+    role:"ADMIN"
+  }));
+
+  window.location.href="index.html";
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,3562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Godown | Inventory Pro</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#06070b;
+  --bg2:#0b0d14;
+  --glass:rgba(255,255,255,.065);
+  --glass2:rgba(255,255,255,.035);
+  --border:rgba(255,255,255,.115);
+  --border-soft:rgba(255,255,255,.065);
+  --text:#f7f8ff;
+  --muted:#9298a8;
+  --accent:#7c5cff;
+  --blue:#4f8cff;
+  --green:#35d39a;
+  --red:#ff667d;
+  --yellow:#f4c95d;
+  --shadow:0 25px 70px rgba(0,0,0,.34);
+  --shadow-soft:0 12px 35px rgba(0,0,0,.18);
+  --blur:26px;
+  --radius:20px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --transition:all .32s var(--ease)
+}
+
+body.light{
+  --bg:#edf0f7;
+  --bg2:#f7f8fc;
+  --glass:rgba(255,255,255,.66);
+  --glass2:rgba(255,255,255,.42);
+  --border:rgba(30,35,60,.105);
+  --border-soft:rgba(30,35,60,.065);
+  --text:#171923;
+  --muted:#687080;
+  --shadow:0 22px 60px rgba(40,45,70,.13);
+  --shadow-soft:0 12px 32px rgba(40,45,70,.08)
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 7% 4%,rgba(108,76,255,.20),transparent 25%),
+    radial-gradient(circle at 96% 18%,rgba(79,140,255,.12),transparent 25%),
+    radial-gradient(circle at 75% 100%,rgba(0,212,255,.10),transparent 30%),
+    linear-gradient(135deg,var(--bg),var(--bg2));
+  color:var(--text);
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  transition:background .55s ease,color .4s ease;
+  overflow-x:hidden
+}
+
+body:before,
+body:after{
+  content:"";
+  position:fixed;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:-1;
+  animation:ambientFloat 10s ease-in-out infinite alternate
+}
+
+body:before{
+  width:480px;
+  height:480px;
+  top:-220px;
+  right:-100px;
+  background:radial-gradient(circle,#7658ff2c 0%,#7658ff0c 38%,transparent 70%);
+  filter:blur(65px)
+}
+
+body:after{
+  width:420px;
+  height:420px;
+  bottom:-220px;
+  left:35%;
+  background:radial-gradient(circle,#00cfff18 0%,transparent 70%);
+  filter:blur(75px);
+  animation-direction:alternate-reverse
+}
+
+button,input,select{font:inherit}
+button,select{-webkit-tap-highlight-color:transparent}
+
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:245px;
+  position:fixed;
+  inset:0 auto 0 0;
+  padding:22px 14px;
+  border-right:1px solid var(--border);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),
+    rgba(8,9,15,.52);
+  backdrop-filter:blur(30px) saturate(145%);
+  -webkit-backdrop-filter:blur(30px) saturate(145%);
+  box-shadow:12px 0 45px rgba(0,0,0,.12);
+  z-index:20;
+  overflow:hidden
+}
+
+.sidebar:before{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  top:-80px;
+  left:-70px;
+  background:#795cff18;
+  filter:blur(55px);
+  border-radius:50%;
+  pointer-events:none
+}
+
+.sidebar:after{
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  width:1px;
+  height:100%;
+  background:linear-gradient(180deg,transparent,#927dff55,transparent);
+  opacity:.6
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:5px 10px 28px;
+  position:relative;
+  z-index:1
+}
+
+.logo{
+  width:39px;
+  height:39px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#a18cff,#6248e9);
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 10px 28px #7658ff45,inset 0 1px 1px rgba(255,255,255,.4);
+  border:1px solid rgba(255,255,255,.2);
+  transition:var(--transition)
+}
+
+.logo:hover{
+  transform:scale(1.1) rotate(-3deg);
+  box-shadow:0 15px 38px #7658ff61,0 0 22px #7c5cff2e,inset 0 1px 1px #fff6
+}
+
+.brand strong{font-size:16px;letter-spacing:-.25px}
+.brand small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+  letter-spacing:.25px
+}
+
+.nav-title{
+  font-size:10px;
+  text-transform:uppercase;
+  color:#686f80;
+  letter-spacing:1.4px;
+  padding:0 12px 9px;
+  font-weight:600
+}
+
+nav{position:relative;z-index:1}
+
+nav a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--muted);
+  text-decoration:none;
+  padding:11px 12px;
+  border-radius:13px;
+  margin:3px 0;
+  font-size:13px;
+  border:1px solid transparent;
+  transition:var(--transition);
+  position:relative;
+  overflow:hidden
+}
+
+nav a:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,#7c5cff26,#4f8cff0b,transparent);
+  opacity:0;
+  transition:opacity .3s
+}
+
+nav a:hover{
+  color:var(--text);
+  transform:translate3d(5px,0,0) scale(1.025);
+  background:linear-gradient(100deg,#7c5cff29,#4f8cff0e,#fff6);
+  border-color:#8b76ff40;
+  box-shadow:0 8px 24px #00000024,0 0 18px #7c5cff12
+}
+
+nav a:hover:before{opacity:1}
+
+nav a.active{
+  color:var(--text);
+  background:linear-gradient(135deg,#7c5cff40,#4f8cff1a);
+  border-color:#8b76ff47;
+  box-shadow:0 8px 28px #5a46dc29,inset 0 1px 0 #fff2
+}
+
+nav a.active:after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:25%;
+  width:3px;
+  height:50%;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(180deg,#a998ff,#628cff);
+  box-shadow:0 0 12px #8168ff
+}
+
+nav a.active:hover{
+  transform:translate3d(5px,0,0) scale(1.025)
+}
+
+nav a span:first-child{
+  width:20px;
+  text-align:center;
+  font-size:16px;
+  position:relative;
+  z-index:1;
+  transition:.3s
+}
+
+nav a span:last-child{
+  position:relative;
+  z-index:1
+}
+
+nav a:hover span:first-child{
+  transform:scale(1.18);
+  text-shadow:0 0 12px #9b89ff8c
+}
+
+.sidebar-bottom{
+  position:absolute;
+  bottom:18px;
+  left:14px;
+  right:14px;
+  z-index:2
+}
+
+.user{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:linear-gradient(135deg,#ffffff14,#ffffff06),var(--glass);
+  box-shadow:var(--shadow-soft);
+  backdrop-filter:blur(18px);
+  transition:var(--transition)
+}
+
+.user:hover{
+  transform:translateY(-3px) scale(1.025);
+  border-color:#9784ff52;
+  box-shadow:0 15px 35px #0003,0 0 20px #7c5cff14,inset 0 1px 0 #fff2
+}
+
+.avatar{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  font-weight:700;
+  background:linear-gradient(135deg,#7c5cff47,#4f8cff1f);
+  border:1px solid #917dff2e;
+  box-shadow:inset 0 1px 1px #fff2
+}
+
+body.light .sidebar{
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(246,248,253,.90)),rgba(255,255,255,.88);
+  border-right:1px solid rgba(30,35,60,.10);
+  box-shadow:12px 0 45px rgba(40,45,70,.08);
+  color:#171923
+}
+
+body.light .sidebar:before{background:rgba(124,92,255,.08)}
+
+body.light .sidebar:after{
+  background:linear-gradient(180deg,transparent,rgba(124,92,255,.28),transparent);
+  opacity:.75
+}
+
+body.light .nav-title{color:#858b9b}
+
+body.light nav a{
+  color:#697082;
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none
+}
+
+body.light nav a span:first-child{color:#747b8d}
+
+body.light nav a:hover{
+  color:#242735;
+  background:linear-gradient(100deg,rgba(124,92,255,.11),rgba(79,140,255,.045),rgba(255,255,255,.72));
+  border-color:rgba(124,92,255,.20);
+  box-shadow:0 8px 24px rgba(55,60,90,.08),0 0 18px rgba(124,92,255,.06)
+}
+
+body.light nav a:hover span:first-child{
+  color:#654ee0;
+  text-shadow:0 0 12px rgba(101,78,224,.20)
+}
+
+body.light nav a.active{
+  color:#20222e;
+  background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(79,140,255,.075));
+  border-color:rgba(124,92,255,.25);
+  box-shadow:0 8px 26px rgba(80,65,180,.10),inset 0 1px 0 rgba(255,255,255,.78)
+}
+
+body.light nav a.active span:first-child{
+  color:#5d48d4;
+  text-shadow:0 0 10px rgba(93,72,212,.16)
+}
+
+body.light nav a.active:after{
+  background:linear-gradient(180deg,#816cff,#4f8cff);
+  box-shadow:0 0 12px rgba(124,92,255,.50)
+}
+
+body.light .user{
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(245,247,252,.80)),rgba(255,255,255,.90);
+  border-color:rgba(30,35,60,.10);
+  color:#20222e;
+  box-shadow:0 10px 30px rgba(40,45,70,.08),inset 0 1px 0 rgba(255,255,255,.88)
+}
+
+body.light .user:hover{
+  border-color:rgba(124,92,255,.25);
+  box-shadow:0 15px 35px rgba(40,45,70,.12),0 0 20px rgba(124,92,255,.07),inset 0 1px 0 rgba(255,255,255,.92)
+}
+
+body.light .user strong{color:#20222e}
+body.light .user small{color:#7a8090!important}
+
+body.light .avatar{
+  background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(79,140,255,.08));
+  border-color:rgba(124,92,255,.20);
+  color:#5040b9;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.8),0 4px 12px rgba(90,70,180,.08)
+}
+
+main{
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:25px 30px 40px;
+  position:relative
+}
+
+main:before{
+  content:"";
+  position:absolute;
+  width:320px;
+  height:320px;
+  top:80px;
+  right:8%;
+  background:#7256ff10;
+  filter:blur(100px);
+  border-radius:50%;
+  pointer-events:none
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:22px;
+  position:relative;
+  z-index:2
+}
+
+.eyebrow{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:6px;
+  letter-spacing:.15px
+}
+
+h1{
+  font-size:27px;
+  letter-spacing:-.9px;
+  line-height:1.15;
+  font-weight:750
+}
+
+.actions{
+  display:flex;
+  gap:9px;
+  align-items:center
+}
+
+.icon-btn{
+  height:40px;
+  width:40px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:linear-gradient(135deg,#ffffff17,#ffffff09),var(--glass);
+  color:var(--text);
+  padding:0;
+  cursor:pointer;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  transition:var(--transition);
+  box-shadow:inset 0 1px 0 #fff1,0 7px 20px #0000001a;
+  position:relative;
+  overflow:hidden
+}
+
+.icon-btn:before,
+.glass-action:before{
+  content:"";
+  position:absolute;
+  inset:-60%;
+  background:linear-gradient(110deg,transparent 35%,#fff2,transparent 65%);
+  transform:translateX(-100%);
+  transition:transform .65s ease
+}
+
+.icon-btn:hover{
+  transform:translateY(-4px) scale(1.08);
+  border-color:#9784ff7a;
+  box-shadow:0 12px 30px #0004,0 0 22px #7c5cff29,inset 0 1px 0 #fff2
+}
+
+.icon-btn:hover:before,
+.glass-action:hover:before{transform:translateX(100%)}
+
+.icon-btn:active{transform:scale(.94)}
+
+.warehouse-actions{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+  flex-wrap:wrap
+}
+
+.glass-action{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 20px;
+  border:1px solid #ffffff29;
+  border-radius:14px;
+  color:#fff;
+  cursor:pointer;
+  background:linear-gradient(135deg,#7c5cffc7,#583adc8f);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 8px 30px #5032dc33,inset 0 1px 0 #fff3;
+  transition:var(--transition);
+  position:relative;
+  overflow:hidden
+}
+
+.glass-action:hover{
+  transform:translateY(-4px) scale(1.035);
+  background:linear-gradient(135deg,#9169ffeb,#41c8bead);
+  border-color:#ffffff4d;
+  box-shadow:0 15px 40px #5a46ff4d,0 0 24px #46d2c026,inset 0 1px 0 #fff4
+}
+
+.glass-action:active{transform:scale(.96)}
+
+.glass-action .action-icon{
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:#ffffff1f;
+  transition:transform .3s var(--ease);
+  position:relative;
+  z-index:1
+}
+
+.glass-action:hover .action-icon{
+  transform:scale(1.15) rotate(90deg)
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
+  margin-bottom:15px;
+  position:relative;
+  z-index:1
+}
+
+.card{
+  border:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.025)),var(--glass);
+  border-radius:var(--radius);
+  backdrop-filter:blur(var(--blur)) saturate(135%);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(135%);
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.055);
+  transition:var(--transition);
+  position:relative;
+  overflow:hidden
+}
+
+.card:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(115deg,transparent 25%,#ffffff14 45%,#ffffff05 55%,transparent 75%);
+  background-size:250% 100%;
+  background-position:200% 0;
+  pointer-events:none;
+  transition:background-position .7s var(--ease)
+}
+
+.card:after{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#8b75ff10;
+  filter:blur(35px);
+  top:-65px;
+  right:-55px;
+  opacity:0;
+  transition:opacity .4s;
+  pointer-events:none
+}
+
+.card:hover{
+  transform:translateY(-7px) scale(1.012);
+  border-color:#9784ff6b;
+  box-shadow:0 30px 80px #00000057,0 0 32px #7c5cff1a,inset 0 1px 0 #fff2
+}
+
+.card:hover:before{background-position:-50% 0}
+.card:hover:after{opacity:1}
+
+.stat{padding:18px;cursor:default}
+
+.stat-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center
+}
+
+.label{font-size:11px;color:var(--muted)}
+
+.stat-icon{
+  width:35px;
+  height:35px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  color:#a899ff;
+  background:linear-gradient(135deg,#7c5cff33,#4f8cff12);
+  border:1px solid #8b76ff1f;
+  box-shadow:inset 0 1px 1px #fff1,0 5px 15px #4632aa1a;
+  transition:var(--transition)
+}
+
+.stat:hover .stat-icon{
+  transform:scale(1.14) rotate(-3deg);
+  border-color:#9784ff61;
+  box-shadow:0 8px 24px #6248dc47,0 0 18px #7c5cff2e,inset 0 1px 1px #fff3
+}
+
+.value{
+  font-size:24px;
+  font-weight:750;
+  margin-top:15px;
+  letter-spacing:-.6px;
+  transition:.35s var(--ease)
+}
+
+.stat:hover .value{
+  transform:translateX(2px);
+  text-shadow:0 0 18px #7c5cff2e
+}
+
+.sub{
+  display:inline-flex;
+  padding:4px 7px;
+  margin-top:7px;
+  border-radius:7px;
+  font-size:10px;
+  color:var(--muted);
+  background:#ffffff06;
+  border:1px solid var(--border-soft)
+}
+
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.red{color:var(--red)}
+
+.toolbar{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+  position:relative;
+  z-index:2
+}
+
+.search{flex:1;position:relative}
+
+.search span{
+  position:absolute;
+  left:15px;
+  top:11px;
+  color:var(--muted);
+  font-size:17px;
+  transition:var(--transition);
+  pointer-events:none
+}
+
+.search:focus-within span{
+  color:#a998ff;
+  transform:scale(1.12)
+}
+
+.search input{
+  width:100%;
+  height:43px;
+  padding:0 15px 0 42px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:linear-gradient(135deg,#ffffff13,#ffffff06),var(--glass);
+  color:var(--text);
+  outline:none;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  font-size:12px;
+  box-shadow:inset 0 1px 0 #fff1,0 7px 22px #00000014;
+  transition:var(--transition)
+}
+
+.search input::placeholder{color:var(--muted)}
+
+.search input:hover{
+  border-color:#9784ff40;
+  box-shadow:inset 0 1px 0 #fff1,0 9px 26px #0000001c
+}
+
+.search input:focus{
+  border-color:#9784ff80;
+  box-shadow:0 0 0 3px #7c5cff1a,0 10px 28px #00000021,inset 0 1px 0 #fff2
+}
+
+.select{
+  height:43px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:linear-gradient(135deg,#ffffff17,#ffffff09),var(--glass);
+  color:var(--text);
+  padding:0 12px;
+  cursor:pointer;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  transition:var(--transition);
+  box-shadow:inset 0 1px 0 #fff1,0 7px 20px #0000001a;
+  outline:none;
+  min-width:150px
+}
+
+.select:hover{
+  transform:translateY(-2px);
+  border-color:#9784ff4d;
+  box-shadow:0 8px 24px #00000029,0 0 16px #7c5cff12
+}
+
+.select:focus{
+  border-color:#9b86ff;
+  box-shadow:0 0 0 3px #7c5cff20,0 8px 24px #00000024
+}
+
+.select option{
+  background:#171923;
+  color:#f5f7ff
+}
+
+body.light .select{
+  background:linear-gradient(135deg,#ffffffe6,#ffffff8c);
+  color:#20222e
+}
+
+body.light .select option{
+  background:#fff;
+  color:#171923
+}
+
+.inventory-card{padding:18px;overflow:hidden}
+
+.panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+  position:relative;
+  z-index:1
+}
+
+.panel-head h2{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:-.15px
+}
+
+.panel-head small{
+  font-size:10px;
+  color:var(--muted)
+}
+
+.table-wrap{
+  overflow:auto;
+  position:relative;
+  z-index:1
+}
+
+.table-wrap::-webkit-scrollbar{height:6px}
+.table-wrap::-webkit-scrollbar-track{background:transparent}
+.table-wrap::-webkit-scrollbar-thumb{background:#8b76ff40;border-radius:10px}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:1000px
+}
+
+th{
+  text-align:left;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:600;
+  padding:11px 9px;
+  border-bottom:1px solid var(--border);
+  letter-spacing:.25px
+}
+
+td{
+  font-size:11px;
+  padding:14px 9px;
+  border-bottom:1px solid var(--border-soft);
+  transition:background .25s,color .25s
+}
+
+tbody tr{
+  transition:transform .28s var(--ease),background .25s
+}
+
+tbody tr:hover{
+  background:linear-gradient(90deg,#7c5cff11,#7c5cff05,transparent);
+  transform:translateX(3px) scale(1.003)
+}
+
+tbody tr:hover td{
+  background:linear-gradient(90deg,#7c5cff09,transparent)
+}
+
+tbody tr:last-child td{border-bottom:none}
+
+.product-name{
+  font-weight:650;
+  transition:color .25s
+}
+
+tbody tr:hover .product-name{color:#a99aff}
+
+.product-sku{
+  font-size:9px;
+  color:var(--muted);
+  margin-top:3px
+}
+
+.stock-number{font-weight:700}
+
+.stock-bar{
+  width:75px;
+  height:5px;
+  background:#ffffff0f;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:6px;
+  box-shadow:inset 0 1px 2px #00000026
+}
+
+.stock-fill{
+  height:100%;
+  border-radius:10px;
+  background:linear-gradient(90deg,#27c98d,#53e1ae);
+  box-shadow:0 0 10px #35d39a2e;
+  transition:width .5s var(--ease),filter .3s
+}
+
+.stock-fill.low{
+  background:linear-gradient(90deg,#e8b844,#f6d76d);
+  box-shadow:0 0 10px #f4c95d29
+}
+
+.stock-fill.out{
+  background:linear-gradient(90deg,#e84f68,#ff7a8d);
+  box-shadow:0 0 10px #ff667d2e
+}
+
+tbody tr:hover .stock-fill{filter:brightness(1.12)}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:8px;
+  font-size:9px;
+  font-weight:600;
+  background:#35d39a15;
+  color:var(--green);
+  border:1px solid #35d39a14;
+  transition:var(--transition)
+}
+
+.badge.low{
+  background:#f4c95d15;
+  color:var(--yellow);
+  border-color:#f4c95d14
+}
+
+.badge.expiry{
+  background:#ff667d15;
+  color:var(--red);
+  border-color:#ff667d14
+}
+
+.badge.safe{
+  background:#35d39a15;
+  color:var(--green);
+  border-color:#35d39a14
+}
+
+.badge.bundle{
+  background:#7c5cff15;
+  color:#a99aff;
+  border-color:#7c5cff25
+}
+
+.badge.product{
+  background:#4f8cff15;
+  color:#78a8ff;
+  border-color:#4f8cff25
+}
+
+tbody tr:hover .badge{transform:scale(1.08)}
+
+.warehouse-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 8px;
+  border-radius:8px;
+  background:#4f8cff10;
+  color:#7eaaff;
+  border:1px solid #4f8cff18;
+  font-size:9px;
+  transition:var(--transition)
+}
+
+.warehouse-tag:hover{
+  transform:scale(1.06);
+  border-color:#4f8cff40
+}
+
+.bundle-info{
+  max-width:190px;
+  line-height:1.5;
+  color:var(--muted);
+  font-size:9px
+}
+
+.bundle-info strong{
+  color:var(--text);
+  font-size:9px
+}
+
+.bottom{
+  display:grid;
+  grid-template-columns:1.3fr .7fr;
+  gap:15px;
+  margin-top:15px;
+  position:relative;
+  z-index:1
+}
+
+.movement,.alert-box{padding:18px}
+
+.movement-list{
+  display:grid;
+  gap:9px
+}
+
+.move{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:11px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#ffffff0e,#ffffff05),var(--glass2);
+  border:1px solid var(--border);
+  transition:var(--transition);
+  will-change:transform,box-shadow
+}
+
+.move:hover{
+  transform:translate3d(4px,-2px,0) scale(1.012);
+  border-color:#9784ff59;
+  background:linear-gradient(135deg,#ffffff13,#ffffff06),var(--glass2);
+  box-shadow:0 10px 28px #00000026,0 0 18px #7c5cff0f
+}
+
+.move-icon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  font-size:14px;
+  transition:var(--transition)
+}
+
+.move:hover .move-icon{
+  transform:scale(1.12) rotate(-3deg)
+}
+
+.in{background:#35d39a15;color:var(--green)}
+.out{background:#ff667d15;color:var(--red)}
+
+.move strong{font-size:11px}
+
+.move small{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px
+}
+
+.move-qty{
+  margin-left:auto;
+  font-size:12px;
+  font-weight:750;
+  transition:.25s var(--ease)
+}
+
+.move:hover .move-qty{transform:scale(1.08)}
+.plus{color:var(--green)}
+.minus{color:var(--red)}
+
+.alert{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border-radius:12px;
+  margin-bottom:8px;
+  background:linear-gradient(135deg,#ff667d13,#ff667d06);
+  border:1px solid #ff667d1f;
+  transition:var(--transition);
+  will-change:transform,box-shadow
+}
+
+.alert:last-child{margin-bottom:0}
+
+.alert:hover{
+  transform:translate3d(3px,-2px,0) scale(1.015);
+  border-color:#ff667d3d;
+  box-shadow:0 9px 25px #00000024,0 0 18px #ff667d12
+}
+
+.alert-dot{
+  width:8px;
+  height:8px;
+  min-width:8px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 12px #ff667d88,0 0 22px #ff667d33;
+  animation:pulseRed 2.2s ease-in-out infinite;
+  transition:transform .3s
+}
+
+.alert:hover .alert-dot{
+  transform:scale(1.35);
+  box-shadow:0 0 16px #ff667daa,0 0 28px #ff667d44
+}
+
+.alert strong{font-size:10px}
+
+.alert small{
+  display:block;
+  font-size:9px;
+  color:var(--muted);
+  margin-top:3px
+}
+
+.alert-days{
+  margin-left:auto;
+  color:var(--red);
+  font-size:9px;
+  font-weight:700;
+  white-space:nowrap
+}
+
+body.light .card{
+  background:linear-gradient(135deg,#ffffffe0,#ffffff6b),var(--glass);
+  box-shadow:0 22px 55px #2d32501a,inset 0 1px 0 #ffffffbf
+}
+
+body.light .card:hover{
+  border-color:#6952d247;
+  box-shadow:0 30px 70px #2d325024,0 0 28px #6952d20f,inset 0 1px 0 #ffffffe6
+}
+
+body.light .search input{
+  background:linear-gradient(135deg,#ffffffe0,#ffffff7a),var(--glass)
+}
+
+body.light .move{
+  background:linear-gradient(135deg,#ffffffa6,#ffffff59),var(--glass2)
+}
+
+body.light .move:hover{
+  box-shadow:0 10px 28px #2d32501a,0 0 18px #6952d20d
+}
+
+body.light .stock-bar{background:#1e233c12}
+
+body.light .alert{
+  background:linear-gradient(135deg,#ff667d0e,#ff667d05)
+}
+
+body.light .glass-action{
+  box-shadow:0 10px 28px #5032dc29,inset 0 1px 0 #ffffff47
+}
+
+/* =========================================================
+   SCANNER MODAL
+========================================================= */
+
+.scanner-overlay{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(3,4,8,.82);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  animation:scannerFade .25s ease
+}
+
+.scanner-box{
+  width:min(460px,100%);
+  max-height:calc(100vh - 40px);
+  overflow:auto;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.035)),#10121be8;
+  color:#fff;
+  box-shadow:0 35px 100px rgba(0,0,0,.6),0 0 45px rgba(124,92,255,.12);
+  backdrop-filter:blur(28px);
+  -webkit-backdrop-filter:blur(28px)
+}
+
+body.light .scanner-box{
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(245,247,253,.92));
+  color:#171923;
+  border-color:rgba(30,35,60,.12);
+  box-shadow:0 35px 90px rgba(40,45,70,.22)
+}
+
+.scanner-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px
+}
+
+.scanner-title{
+  font-size:15px;
+  font-weight:750
+}
+
+.scanner-close{
+  width:36px;
+  height:36px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:11px;
+  background:rgba(255,255,255,.08);
+  color:inherit;
+  cursor:pointer;
+  font-size:20px;
+  transition:.25s ease
+}
+
+.scanner-close:hover{
+  transform:scale(1.08);
+  border-color:#9784ff66
+}
+
+.scanner-video-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  border-radius:18px;
+  background:#000;
+  border:1px solid rgba(255,255,255,.12)
+}
+
+.scanner-video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block
+}
+
+.scanner-frame{
+  position:absolute;
+  width:70%;
+  height:30%;
+  left:15%;
+  top:35%;
+  border:2px solid rgba(255,255,255,.75);
+  border-radius:14px;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.12),0 0 25px rgba(124,92,255,.35);
+  pointer-events:none
+}
+
+.scanner-line{
+  position:absolute;
+  left:18%;
+  width:64%;
+  top:50%;
+  height:2px;
+  background:#7c5cff;
+  box-shadow:0 0 15px #7c5cff;
+  animation:scannerLine 2s ease-in-out infinite;
+  pointer-events:none
+}
+
+.scanner-status{
+  margin-top:11px;
+  color:#aeb4c4;
+  font-size:10px;
+  line-height:1.5
+}
+
+body.light .scanner-status{
+  color:#687080
+}
+
+.scanner-manual{
+  margin-top:13px;
+  display:flex;
+  gap:8px
+}
+
+.scanner-manual input{
+  flex:1;
+  min-width:0;
+  height:42px;
+  padding:0 12px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:12px;
+  outline:none;
+  background:rgba(255,255,255,.08);
+  color:inherit;
+  font-size:12px
+}
+
+body.light .scanner-manual input{
+  background:rgba(30,35,60,.045);
+  border-color:rgba(30,35,60,.12)
+}
+
+.scanner-manual input:focus{
+  border-color:#7c5cff80;
+  box-shadow:0 0 0 3px #7c5cff18
+}
+
+.scanner-manual button{
+  height:42px;
+  padding:0 15px;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;
+  background:linear-gradient(135deg,#7c5cff,#5b43d6);
+  color:#fff;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+  transition:.25s ease
+}
+
+.scanner-manual button:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.08)
+}
+
+.scanner-cancel{
+  width:100%;
+  margin-top:9px;
+  height:40px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  background:rgba(255,255,255,.06);
+  color:inherit;
+  cursor:pointer;
+  font-size:11px;
+  transition:.25s ease
+}
+
+.scanner-cancel:hover{
+  border-color:#ff667d55;
+  background:#ff667d0d
+}
+
+.scanner-fallback-note{
+  margin-top:9px;
+  padding:9px 11px;
+  border-radius:10px;
+  background:#f4c95d0d;
+  border:1px solid #f4c95d22;
+  color:#d8c88e;
+  font-size:9px;
+  line-height:1.5
+}
+
+body.light .scanner-fallback-note{
+  color:#75631f;
+  background:#f4c95d12
+}
+
+@keyframes scannerFade{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes scannerLine{
+  0%,100%{transform:translateY(-35px);opacity:.65}
+  50%{transform:translateY(35px);opacity:1}
+}
+
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .bottom{grid-template-columns:1fr}
+}
+
+@media(max-width:720px){
+
+  .sidebar{
+    width:66px;
+    padding:15px 9px
+  }
+
+  .brand strong,
+  .brand small,
+  .nav-title,
+  nav a span:last-child{
+    display:none
+  }
+
+  .brand{padding:4px 4px 25px}
+  .logo{margin:auto}
+
+  nav a{
+    justify-content:center;
+    padding:12px 5px
+  }
+
+  nav a.active:after{left:1px}
+
+  .sidebar-bottom{
+    left:8px;
+    right:8px
+  }
+
+  .user{
+    justify-content:center;
+    padding:8px
+  }
+
+  main{
+    margin-left:66px;
+    width:calc(100% - 66px);
+    padding:18px 14px 30px
+  }
+
+  h1{font-size:22px}
+  .topbar{align-items:flex-start}
+
+  .toolbar{flex-wrap:wrap}
+  .search{min-width:100%}
+
+  .select{
+    flex:1;
+    min-width:0
+  }
+
+  .warehouse-actions{
+    flex-direction:column
+  }
+
+  .glass-action{
+    width:100%;
+    justify-content:center
+  }
+
+  .card:hover{
+    transform:translateY(-4px) scale(1.004)
+  }
+
+  .move:hover,
+  .alert:hover{
+    transform:translate3d(2px,-1px,0) scale(1.008)
+  }
+
+  .scanner-box{
+    padding:15px;
+    border-radius:20px
+  }
+
+  .scanner-manual{
+    flex-direction:column
+  }
+
+  .scanner-manual button{
+    width:100%
+  }
+}
+
+@media(max-width:450px){
+
+  .stats{grid-template-columns:1fr}
+  .actions{gap:5px}
+
+  .icon-btn{
+    width:36px;
+    height:36px
+  }
+
+  .stat{padding:15px}
+
+  .inventory-card,
+  .movement,
+  .alert-box{
+    padding:15px
+  }
+}
+
+@keyframes ambientFloat{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(-20px,25px,0) scale(1.08)}
+}
+
+@keyframes pulseRed{
+
+  0%,100%{
+    box-shadow:0 0 10px #ff667d66,0 0 18px #ff667d22
+  }
+
+  50%{
+    box-shadow:0 0 15px #ff667daa,0 0 26px #ff667d33
+  }
+}
+
+nav a:active,
+.card:active,
+.move:active,
+.alert:active,
+.glass-action:active,
+.logo:active,
+.user:active{
+  transform:scale(.985)
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *:before,
+  *:after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important
+  }
+
+  .card:hover,
+  nav a:hover,
+  .icon-btn:hover,
+  .glass-action:hover,
+  .user:hover,
+  .move:hover,
+  .alert:hover,
+  tbody tr:hover{
+    transform:none
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+  <div class="brand">
+
+    <div class="logo">I</div>
+
+    <div>
+      <strong>Inventory Pro</strong>
+      <small>Business OS</small>
+    </div>
+
+  </div>
+
+  <div class="nav-title">Workspace</div>
+
+  <nav>
+
+    <a href="index.html">
+      <span>⌂</span>
+      <span>Dashboard</span>
+    </a>
+
+    <a href="shop.html">
+      <span>▣</span>
+      <span>Shop & Products</span>
+    </a>
+
+    <a class="active" href="godown.html">
+      <span>▤</span>
+      <span>Godown</span>
+    </a>
+
+    <a href="billing.html">
+      <span>▤</span>
+      <span>Billing</span>
+    </a>
+
+  </nav>
+
+  <div class="sidebar-bottom">
+
+    <div class="user">
+
+      <div class="avatar">A</div>
+
+      <div>
+        <strong style="font-size:11px">Admin</strong>
+
+        <small style="
+          display:block;
+          color:var(--muted);
+          font-size:10px
+        ">
+          Administrator
+        </small>
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
+
+<main>
+
+<header class="topbar">
+
+  <div>
+
+    <div class="eyebrow">
+      Main Warehouse & Stock Control
+    </div>
+
+    <h1>Godown Management</h1>
+
+    <div class="warehouse-actions">
+
+      <button
+        class="glass-action"
+        id="scanBtn"
+        type="button"
+      >
+        <span class="action-icon">⌕</span>
+        <span>Scan Product / Box</span>
+      </button>
+
+      <button
+        class="glass-action"
+        id="addIncomingBtn"
+        type="button"
+      >
+        <span class="action-icon">+</span>
+        <span>Add Incoming Stock</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="actions">
+
+    <button
+      class="icon-btn"
+      id="theme"
+      type="button"
+      title="Toggle theme"
+    >☾</button>
+
+    <button
+      class="icon-btn"
+      id="refreshBtn"
+      type="button"
+      title="Refresh"
+    >↻</button>
+
+  </div>
+
+</header>
+
+<section class="stats">
+
+  <div class="card stat">
+
+    <div class="stat-top">
+      <span class="label">Total Warehouse Stock</span>
+      <span class="stat-icon">▤</span>
+    </div>
+
+    <div class="value" id="totalStock">0</div>
+
+    <div class="sub green">
+      Live warehouse inventory
+    </div>
+
+  </div>
+
+  <div class="card stat">
+
+    <div class="stat-top">
+      <span class="label">Incoming Today</span>
+      <span class="stat-icon">↓</span>
+    </div>
+
+    <div class="value green" id="incomingToday">+0</div>
+
+    <div class="sub" id="incomingTransactions">
+      0 transactions
+    </div>
+
+  </div>
+
+  <div class="card stat">
+
+    <div class="stat-top">
+      <span class="label">Outgoing Today</span>
+      <span class="stat-icon">↑</span>
+    </div>
+
+    <div class="value red" id="outgoingToday">−0</div>
+
+    <div class="sub">Billing / Sales</div>
+
+  </div>
+
+  <div class="card stat">
+
+    <div class="stat-top">
+      <span class="label">Expiry Risk</span>
+      <span class="stat-icon">!</span>
+    </div>
+
+    <div class="value red" id="expiryRisk">0</div>
+
+    <div class="sub">Within 3 days</div>
+
+  </div>
+
+</section>
+
+<div class="toolbar">
+
+  <div class="search">
+
+    <span>⌕</span>
+
+    <input
+      id="search"
+      type="search"
+      autocomplete="off"
+      placeholder="Search product, SKU, batch or barcode..."
+    >
+
+  </div>
+
+  <select class="select" id="status">
+
+    <option value="all">All Stock</option>
+    <option value="normal">Normal</option>
+    <option value="low">Low Stock</option>
+    <option value="expiry">Expiry Risk</option>
+    <option value="bundle">Boxes / Bundles</option>
+
+  </select>
+
+</div>
+
+<section class="card inventory-card">
+
+  <div class="panel-head">
+
+    <div>
+      <h2>Main Warehouse Inventory</h2>
+
+      <small id="count">
+        0 records · Main Warehouse
+      </small>
+    </div>
+
+    <small>Incoming + / Outgoing −</small>
+
+  </div>
+
+  <div class="table-wrap">
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>PRODUCT</th>
+          <th>TYPE</th>
+          <th>SKU / BARCODE</th>
+          <th>WAREHOUSE</th>
+          <th>STOCK</th>
+          <th>BATCH</th>
+          <th>EXPIRY</th>
+          <th>CONTENTS</th>
+          <th>STATUS</th>
+        </tr>
+
+      </thead>
+
+      <tbody id="inventory"></tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+<section class="bottom">
+
+  <div class="card movement">
+
+    <div class="panel-head">
+
+      <div>
+        <h2>Recent Stock Movement</h2>
+        <small>Latest warehouse transactions</small>
+      </div>
+
+      <small>Live ledger</small>
+
+    </div>
+
+    <div class="movement-list" id="movementList"></div>
+
+  </div>
+
+  <div class="card alert-box">
+
+    <div class="panel-head">
+
+      <div>
+        <h2>Expiry Alerts</h2>
+        <small>Automatic 3-day warning</small>
+      </div>
+
+    </div>
+
+    <div id="alerts"></div>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+<script>
+
+const INVENTORY_KEY="inventory_data";
+const MOVEMENT_KEY="inventory_movements";
+const THEME_KEY="inventory_theme";
+const MAIN_WAREHOUSE="Main Warehouse";
+
+const fallbackInventory=[
+  {
+    id:"BIS001",
+    name:"ABC Biscuit",
+    sku:"BIS001",
+    barcode:"89010001",
+    stock:120,
+    min:20,
+    batch:"B-102",
+    expiry:"12 Aug 2026",
+    godown:MAIN_WAREHOUSE,
+    type:"product",
+    contents:[]
+  },
+  {
+    id:"MLK002",
+    name:"Fresh Milk",
+    sku:"MLK002",
+    barcode:"89010002",
+    stock:48,
+    min:15,
+    batch:"M-44",
+    expiry:"13 Aug 2026",
+    godown:MAIN_WAREHOUSE,
+    type:"product",
+    contents:[]
+  },
+  {
+    id:"CHP003",
+    name:"Classic Chips",
+    sku:"CHP003",
+    barcode:"89010003",
+    stock:8,
+    min:10,
+    batch:"C-81",
+    expiry:"30 Aug 2026",
+    godown:MAIN_WAREHOUSE,
+    type:"product",
+    contents:[]
+  },
+  {
+    id:"JUI004",
+    name:"Orange Juice",
+    sku:"JUI004",
+    barcode:"89010004",
+    stock:32,
+    min:10,
+    batch:"J-21",
+    expiry:"16 Aug 2026",
+    godown:MAIN_WAREHOUSE,
+    type:"product",
+    contents:[]
+  },
+  {
+    id:"CHO005",
+    name:"Chocolate Bar",
+    sku:"CHO005",
+    barcode:"89010005",
+    stock:65,
+    min:15,
+    batch:"CH-18",
+    expiry:"20 Sep 2026",
+    godown:MAIN_WAREHOUSE,
+    type:"product",
+    contents:[]
+  },
+  {
+    id:"CKP006",
+    name:"Cookie Pack",
+    sku:"CKP006",
+    barcode:"89010006",
+    stock:4,
+    min:10,
+    batch:"C-19",
+    expiry:"14 Aug 2026",
+    godown:MAIN_WAREHOUSE,
+    type:"product",
+    contents:[]
+  }
+];
+
+function loadInventory(){
+
+  let stored;
+
+  try{
+    stored=JSON.parse(
+      localStorage.getItem(INVENTORY_KEY)
+    );
+  }catch(e){
+    stored=null;
+  }
+
+  if(!Array.isArray(stored)){
+    stored=fallbackInventory;
+  }
+
+  return stored.map((p,index)=>({
+    ...p,
+    id:p.id??`${Date.now()}-${index}`,
+    name:String(p.name||"Unnamed Product"),
+    sku:String(p.sku||""),
+    barcode:String(p.barcode||""),
+    stock:Number(p.stock||0),
+    min:Number(p.min??10),
+    batch:String(p.batch||""),
+    expiry:String(p.expiry||""),
+    godown:MAIN_WAREHOUSE,
+    type:p.type==="bundle"?"bundle":"product",
+    contents:Array.isArray(p.contents)?p.contents:[]
+  }));
+
+}
+
+function loadMovements(){
+
+  try{
+
+    const stored=JSON.parse(
+      localStorage.getItem(MOVEMENT_KEY)
+    );
+
+    return Array.isArray(stored)?stored:[];
+
+  }catch(e){
+
+    return [];
+
+  }
+
+}
+
+let data=loadInventory();
+let movements=loadMovements();
+
+const inventoryEl=document.getElementById("inventory");
+const searchEl=document.getElementById("search");
+const statusEl=document.getElementById("status");
+
+function save(){
+
+  localStorage.setItem(
+    INVENTORY_KEY,
+    JSON.stringify(data)
+  );
+
+  localStorage.setItem(
+    MOVEMENT_KEY,
+    JSON.stringify(movements)
+  );
+
+}
+
+function sync(){
+
+  data=loadInventory();
+  movements=loadMovements();
+  render();
+
+}
+
+window.addEventListener("storage",event=>{
+
+  if(
+    event.key===INVENTORY_KEY ||
+    event.key===MOVEMENT_KEY
+  ){
+    sync();
+  }
+
+});
+
+window.addEventListener("pageshow",()=>{
+
+  data=loadInventory();
+  movements=loadMovements();
+  render();
+
+});
+
+document.addEventListener("visibilitychange",()=>{
+
+  if(document.visibilityState==="visible"){
+    sync();
+  }
+
+});
+
+function safeText(value){
+
+  return String(value??"").replace(
+    /[&<>"']/g,
+    c=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c])
+  );
+
+}
+
+function daysLeft(date){
+
+  if(!date)return 9999;
+
+  const d=new Date(date);
+
+  if(Number.isNaN(d.getTime()))return 9999;
+
+  const now=new Date();
+
+  now.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+
+  return Math.ceil(
+    (d.getTime()-now.getTime())/86400000
+  );
+
+}
+
+function productType(product){
+
+  return product.type==="bundle"
+    ?"Box / Bundle"
+    :"Product";
+
+}
+
+function findProductByReference(ref){
+
+  if(!ref)return null;
+
+  return data.find(p=>
+
+    String(p.sku||"").trim()===String(ref).trim() ||
+
+    String(p.barcode||"").trim()===String(ref).trim() ||
+
+    String(p.id||"").trim()===String(ref).trim()
+
+  )||null;
+
+}
+
+function contentsText(product){
+
+  if(product.type!=="bundle")return "—";
+
+  if(
+    !Array.isArray(product.contents) ||
+    !product.contents.length
+  ){
+    return "No contents";
+  }
+
+  return product.contents.map(c=>{
+
+    const child=findProductByReference(
+      c.productSku||
+      c.productBarcode||
+      c.productId
+    );
+
+    const qty=Number(
+      c.quantityPerBundle??
+      c.quantity??
+      0
+    );
+
+    return `${
+      child?.name||
+      c.productName||
+      c.productSku||
+      c.productBarcode||
+      "Unknown"
+    } × ${qty}`;
+
+  }).join(", ");
+
+}
+
+function statusType(product){
+
+  const days=daysLeft(product.expiry);
+
+  if(days<=3)return "expiry";
+
+  if(
+    Number(product.stock)<=
+    Number(product.min)
+  ){
+    return "low";
+  }
+
+  return "normal";
+
+}
+
+function render(){
+
+  const query=searchEl.value.trim().toLowerCase();
+  const filter=statusEl.value;
+
+  const list=data.filter(product=>{
+
+    const text=[
+      product.name,
+      product.sku,
+      product.barcode,
+      product.batch,
+      product.type,
+      MAIN_WAREHOUSE,
+      contentsText(product)
+    ].join(" ").toLowerCase();
+
+    const matchesSearch=
+      !query||text.includes(query);
+
+    const currentStatus=statusType(product);
+
+    const matchesStatus=
+      filter==="all"||
+      currentStatus===filter||
+      (
+        filter==="bundle"&&
+        product.type==="bundle"
+      );
+
+    return matchesSearch&&matchesStatus;
+
+  });
+
+  document.getElementById("count").textContent=
+    `${list.length} records · Main Warehouse`;
+
+  if(!list.length){
+
+    inventoryEl.innerHTML=`
+      <tr>
+        <td colspan="9">
+          <div style="
+            padding:40px;
+            text-align:center;
+            color:var(--muted)
+          ">
+            No inventory records found.
+          </div>
+        </td>
+      </tr>
+    `;
+
+  }else{
+
+    inventoryEl.innerHTML=list.map(renderRow).join("");
+
+  }
+
+  renderStats();
+  renderMovements();
+  renderAlerts();
+
+}
+
+function renderRow(product){
+
+  const stock=Number(product.stock||0);
+  const minimum=Number(product.min||0);
+  const low=stock<=minimum;
+  const expiryRisk=daysLeft(product.expiry)<=3;
+
+  const percentage=Math.max(
+    0,
+    Math.min(
+      100,
+      stock/
+      Math.max(minimum*3,1)*
+      100
+    )
+  );
+
+  const id=encodeURIComponent(String(product.id));
+
+  return `
+
+<tr
+  data-id="${safeText(product.id)}"
+  onclick="
+    showInventoryDetails(
+      decodeURIComponent('${id}')
+    )
+  "
+  style="cursor:pointer"
+>
+
+<td>
+
+  <div class="product-name">
+    ${safeText(product.name)}
+  </div>
+
+  <div class="product-sku">
+    ${
+      product.type==="bundle"
+      ?"📦 Box / Bundle"
+      :"Retail product"
+    }
+  </div>
+
+</td>
+
+<td>
+
+  <span class="
+    badge
+    ${product.type==="bundle"?"bundle":"product"}
+  ">
+    ${productType(product)}
+  </span>
+
+</td>
+
+<td>
+
+  <div>
+    ${safeText(product.sku)||"—"}
+  </div>
+
+  <div class="product-sku">
+    ${safeText(product.barcode)||"No barcode"}
+  </div>
+
+</td>
+
+<td>
+
+  <span class="warehouse-tag">
+    ▤ Main Warehouse
+  </span>
+
+</td>
+
+<td>
+
+  <div class="stock-number">
+
+    ${stock.toLocaleString()}
+
+    ${
+      product.type==="bundle"
+      ?" boxes"
+      :" units"
+    }
+
+  </div>
+
+  <div class="stock-bar">
+
+    <div
+      class="
+        stock-fill
+        ${
+          !stock
+          ?"out"
+          :low
+          ?"low"
+          :""
+        }
+      "
+      style="width:${percentage}%"
+    ></div>
+
+  </div>
+
+</td>
+
+<td>
+  ${safeText(product.batch)||"—"}
+</td>
+
+<td class="${expiryRisk?"red":""}">
+  ${safeText(product.expiry)||"—"}
+</td>
+
+<td>
+
+  <div class="bundle-info">
+
+    ${
+      product.type==="bundle"
+
+      ?`
+        <strong>
+          ${safeText(contentsText(product))}
+        </strong>
+      `
+
+      :"Individual product"
+    }
+
+  </div>
+
+</td>
+
+<td>
+
+  <span class="
+    badge
+    ${
+      expiryRisk
+      ?"expiry"
+      :low
+      ?"low"
+      :"safe"
+    }
+  ">
+
+    ${
+      expiryRisk
+      ?(
+        daysLeft(product.expiry)<=0
+        ?"EXPIRED"
+        :"EXPIRING"
+      )
+      :low
+      ?"LOW STOCK"
+      :"NORMAL"
+    }
+
+  </span>
+
+</td>
+
+</tr>
+
+`;
+
+}
+
+function renderStats(){
+
+  const total=data.reduce(
+    (sum,p)=>
+      sum+Number(p.stock||0),
+    0
+  );
+
+  const today=new Date().toDateString();
+
+  const incoming=movements.filter(m=>
+
+    (
+      m.type==="in"||
+      m.type==="incoming"||
+      m.type==="IN"
+    )&&
+
+    new Date(
+      m.time||m.date
+    ).toDateString()===today
+
+  );
+
+  const outgoing=movements.filter(m=>
+
+    (
+      m.type==="out"||
+      m.type==="outgoing"||
+      m.type==="OUT"
+    )&&
+
+    new Date(
+      m.time||m.date
+    ).toDateString()===today
+
+  );
+
+  const incomingQty=incoming.reduce(
+    (sum,m)=>
+      sum+
+      Math.abs(
+        Number(
+          m.qty??
+          m.quantity??
+          0
+        )
+      ),
+    0
+  );
+
+  const outgoingQty=outgoing.reduce(
+    (sum,m)=>
+      sum+
+      Math.abs(
+        Number(
+          m.qty??
+          m.quantity??
+          0
+        )
+      ),
+    0
+  );
+
+  const expiry=data.filter(
+    p=>daysLeft(p.expiry)<=3
+  ).length;
+
+  document.getElementById("totalStock").textContent=
+    total.toLocaleString();
+
+  document.getElementById("incomingToday").textContent=
+    `+${incomingQty}`;
+
+  document.getElementById("incomingTransactions").textContent=
+    `${incoming.length} transactions`;
+
+  document.getElementById("outgoingToday").textContent=
+    `−${outgoingQty}`;
+
+  document.getElementById("expiryRisk").textContent=
+    expiry;
+
+}
+
+function renderMovements(){
+
+  const list=document.getElementById(
+    "movementList"
+  );
+
+  const recent=movements
+    .slice()
+    .sort(
+      (a,b)=>
+        new Date(
+          b.time||
+          b.date||
+          0
+        )-
+        new Date(
+          a.time||
+          a.date||
+          0
+        )
+    )
+    .slice(0,7);
+
+  if(!recent.length){
+
+    list.innerHTML=`
+      <div style="
+        padding:25px;
+        text-align:center;
+        color:var(--muted);
+        font-size:10px
+      ">
+        No inventory movements yet.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  list.innerHTML=recent.map(m=>{
+
+    const isIncoming=
+      m.type==="in"||
+      m.type==="incoming"||
+      m.type==="IN";
+
+    const quantity=Math.abs(
+      Number(
+        m.qty??
+        m.quantity??
+        0
+      )
+    );
+
+    const movementTime=new Date(
+      m.time||
+      m.date||
+      Date.now()
+    );
+
+    const time=movementTime.toLocaleString(
+      [],
+      {
+        day:"2-digit",
+        month:"short",
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
+
+    return `
+
+<div class="move">
+
+  <div class="
+    move-icon
+    ${isIncoming?"in":"out"}
+  ">
+    ${isIncoming?"↓":"↑"}
+  </div>
+
+  <div>
+
+    <strong>
+      ${safeText(
+        m.name||
+        m.productName||
+        "Inventory Item"
+      )}
+    </strong>
+
+    <small>
+
+      ${isIncoming?"IN":"OUT"}
+
+      ·
+
+      ${safeText(
+        m.source||
+        m.reason||
+        "Inventory"
+      )}
+
+      · Main Warehouse
+
+      · ${time}
+
+    </small>
+
+  </div>
+
+  <div class="
+    move-qty
+    ${isIncoming?"plus":"minus"}
+  ">
+
+    ${isIncoming?"+":"−"}${quantity}
+
+  </div>
+
+</div>
+
+`;
+
+  }).join("");
+
+}
+
+function renderAlerts(){
+
+  const box=document.getElementById("alerts");
+
+  const alerts=data
+    .map(product=>({
+      product,
+      days:daysLeft(product.expiry)
+    }))
+    .filter(x=>x.days<=3)
+    .sort((a,b)=>a.days-b.days);
+
+  if(!alerts.length){
+
+    box.innerHTML=`
+      <div style="
+        padding:25px;
+        text-align:center;
+        color:var(--muted);
+        font-size:10px
+      ">
+        No products expiring within 3 days.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  box.innerHTML=alerts.map(x=>{
+
+    const product=x.product;
+    const expired=x.days<=0;
+
+    return `
+
+<div class="alert">
+
+  <div class="alert-dot"></div>
+
+  <div>
+
+    <strong>
+      ${safeText(product.name)}
+    </strong>
+
+    <small>
+
+      Batch
+      ${safeText(product.batch)||"—"}
+
+      · Main Warehouse
+
+      ·
+      ${safeText(product.expiry)||"—"}
+
+    </small>
+
+  </div>
+
+  <div class="alert-days">
+
+    ${
+      expired
+      ?"EXPIRED"
+      :`${x.days} ${x.days===1?"DAY":"DAYS"}`
+    }
+
+  </div>
+
+</div>
+
+`;
+
+  }).join("");
+
+}
+
+function showInventoryDetails(id){
+
+  const product=data.find(
+    p=>String(p.id)===String(id)
+  );
+
+  if(!product)return;
+
+  const days=daysLeft(product.expiry);
+
+  let message=`
+
+${product.type==="bundle"?"📦 ":""}${product.name}
+
+Type:
+${productType(product)}
+
+Barcode:
+${product.barcode||"—"}
+
+SKU:
+${product.sku||"—"}
+
+Warehouse:
+${MAIN_WAREHOUSE}
+
+Stock:
+${product.stock}
+${product.type==="bundle"?"boxes":"units"}
+
+Batch:
+${product.batch||"—"}
+
+Expiry:
+${product.expiry||"—"}
+
+Status:
+${
+  days<=0
+  ?"EXPIRED"
+  :days<=3
+  ?"EXPIRING SOON"
+  :"NORMAL"
+}
+`;
+
+  if(product.type==="bundle"){
+
+    message+=`
+
+Contents:
+${contentsText(product)}`;
+
+  }
+
+  alert(message);
+
+}
+
+
+/* =========================================================
+   FINAL BARCODE SCANNER
+   CAMERA + MANUAL ENTRY
+========================================================= */
+
+function scanner(callback){
+
+  let finished=false;
+  let stream=null;
+  let nativeDetector=null;
+  let html5Scanner=null;
+
+  const overlay=document.createElement("div");
+
+  overlay.className="scanner-overlay";
+
+  overlay.innerHTML=`
+
+    <div class="scanner-box">
+
+      <div class="scanner-head">
+
+        <div class="scanner-title">
+          Scan Product / Box Barcode
+        </div>
+
+        <button
+          class="scanner-close"
+          id="scannerClose"
+          type="button"
+          aria-label="Close scanner"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="scanner-video-wrap">
+
+        <video
+          class="scanner-video"
+          id="scannerVideo"
+          autoplay
+          playsinline
+          muted
+        ></video>
+
+        <div class="scanner-frame"></div>
+        <div class="scanner-line"></div>
+
+      </div>
+
+      <div
+        class="scanner-status"
+        id="scannerStatus"
+      >
+        Starting camera scanner...
+      </div>
+
+      <div class="scanner-manual">
+
+        <input
+          id="manualBarcodeInput"
+          type="text"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="Enter barcode manually"
+        >
+
+        <button
+          id="manualBarcodeBtn"
+          type="button"
+        >
+          Search
+        </button>
+
+      </div>
+
+      <button
+        class="scanner-cancel"
+        id="scannerCancel"
+        type="button"
+      >
+        Cancel
+      </button>
+
+      <div
+        class="scanner-fallback-note"
+        id="scannerNote"
+        style="display:none"
+      >
+        Camera scanning is unavailable in this browser or connection.
+        Manual barcode entry is still available above.
+      </div>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(overlay);
+
+  const video=overlay.querySelector("#scannerVideo");
+  const status=overlay.querySelector("#scannerStatus");
+  const input=overlay.querySelector("#manualBarcodeInput");
+  const manualBtn=overlay.querySelector("#manualBarcodeBtn");
+  const note=overlay.querySelector("#scannerNote");
+
+  function cleanup(){
+
+    if(stream){
+
+      stream.getTracks().forEach(
+        track=>track.stop()
+      );
+
+      stream=null;
+
+    }
+
+    if(html5Scanner){
+
+      try{
+        html5Scanner.stop().catch(()=>{});
+      }catch(e){}
+
+      try{
+        html5Scanner.clear();
+      }catch(e){}
+
+      html5Scanner=null;
+
+    }
+
+    overlay.remove();
+
+  }
+
+  function finish(value){
+
+    if(finished)return;
+
+    const clean=String(
+      value||""
+    ).trim();
+
+    if(!clean)return;
+
+    finished=true;
+
+    cleanup();
+
+    callback(clean);
+
+  }
+
+  function close(){
+
+    if(finished)return;
+
+    finished=true;
+    cleanup();
+
+  }
+
+  overlay.querySelector(
+    "#scannerClose"
+  ).onclick=close;
+
+  overlay.querySelector(
+    "#scannerCancel"
+  ).onclick=close;
+
+  manualBtn.onclick=()=>{
+
+    finish(input.value);
+
+  };
+
+  input.addEventListener(
+    "keydown",
+    event=>{
+
+      if(event.key==="Enter"){
+
+        event.preventDefault();
+
+        finish(input.value);
+
+      }
+
+    }
+  );
+
+
+  /*
+    ---------------------------------------------------------
+    CAMERA SCANNING
+    ---------------------------------------------------------
+    First use native BarcodeDetector.
+    If unavailable, dynamically load Html5Qrcode.
+  */
+
+  async function nativeScan(){
+
+    if(
+      !window.BarcodeDetector||
+      !navigator.mediaDevices||
+      !navigator.mediaDevices.getUserMedia
+    ){
+
+      return false;
+
+    }
+
+    try{
+
+      nativeDetector=new BarcodeDetector({
+        formats:[
+          "ean_13",
+          "ean_8",
+          "code_128",
+          "code_39",
+          "upc_a",
+          "upc_e",
+          "itf",
+          "codabar",
+          "qr_code"
+        ]
+      });
+
+    }catch(e){
+
+      return false;
+
+    }
+
+    try{
+
+      stream=await navigator.mediaDevices.getUserMedia({
+
+        video:{
+          facingMode:{
+            ideal:"environment"
+          },
+          width:{
+            ideal:1280
+          },
+          height:{
+            ideal:720
+          }
+        },
+
+        audio:false
+
+      });
+
+      video.srcObject=stream;
+
+      await video.play();
+
+      status.textContent=
+        "Camera active — point the barcode inside the frame.";
+
+      const scan=async()=>{
+
+        if(finished)return;
+
+        try{
+
+          if(
+            video.readyState>=
+            HTMLMediaElement.HAVE_ENOUGH_DATA
+          ){
+
+            const results=
+              await nativeDetector.detect(video);
+
+            if(
+              results&&
+              results.length
+            ){
+
+              const value=
+                results[0].rawValue;
+
+              if(value){
+
+                finish(value);
+
+                return;
+
+              }
+
+            }
+
+          }
+
+        }catch(e){}
+
+        if(!finished){
+
+          requestAnimationFrame(scan);
+
+        }
+
+      };
+
+      scan();
+
+      return true;
+
+    }catch(error){
+
+      if(stream){
+
+        stream.getTracks().forEach(
+          track=>track.stop()
+        );
+
+        stream=null;
+
+      }
+
+      return false;
+
+    }
+
+  }
+
+
+  async function loadHtml5QrCode(){
+
+    if(window.Html5Qrcode){
+
+      return true;
+
+    }
+
+    return new Promise(resolve=>{
+
+      const existing=
+        document.querySelector(
+          'script[data-inventory-html5qr]'
+        );
+
+      if(existing){
+
+        existing.addEventListener(
+          "load",
+          ()=>resolve(
+            !!window.Html5Qrcode
+          )
+        );
+
+        existing.addEventListener(
+          "error",
+          ()=>resolve(false)
+        );
+
+        return;
+
+      }
+
+      const script=
+        document.createElement("script");
+
+      script.src=
+        "https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js";
+
+      script.async=true;
+
+      script.dataset.inventoryHtml5qr="true";
+
+      script.onload=()=>{
+
+        resolve(
+          !!window.Html5Qrcode
+        );
+
+      };
+
+      script.onerror=()=>resolve(false);
+
+      document.head.appendChild(script);
+
+    });
+
+  }
+
+
+  async function html5QrScan(){
+
+    const available=
+      await loadHtml5QrCode();
+
+    if(!available){
+
+      return false;
+
+    }
+
+    if(finished)return true;
+
+    const videoWrap=
+      overlay.querySelector(
+        ".scanner-video-wrap"
+      );
+
+    /*
+      Hide native video when Html5Qrcode takes control.
+    */
+
+    video.style.display="none";
+
+    const nativeFrame=
+      overlay.querySelector(
+        ".scanner-frame"
+      );
+
+    const nativeLine=
+      overlay.querySelector(
+        ".scanner-line"
+      );
+
+    nativeFrame.style.display="none";
+    nativeLine.style.display="none";
+
+    const reader=
+      document.createElement("div");
+
+    reader.id=
+      "inventoryHtml5Reader";
+
+    reader.style.width="100%";
+    reader.style.height="100%";
+
+    videoWrap.appendChild(reader);
+
+    status.textContent=
+      "Camera active — point the barcode inside the frame.";
+
+    try{
+
+      html5Scanner=
+        new Html5Qrcode(
+          "inventoryHtml5Reader"
+        );
+
+      await html5Scanner.start(
+
+        {
+          facingMode:"environment"
+        },
+
+        {
+          fps:10,
+
+          qrbox:{
+            width:280,
+            height:120
+          },
+
+          aspectRatio:1.333333,
+
+          disableFlip:false
+
+        },
+
+        decodedText=>{
+
+          finish(decodedText);
+
+        },
+
+        ()=>{}
+
+      );
+
+      return true;
+
+    }catch(error){
+
+      try{
+
+        await html5Scanner.start(
+
+          {
+            facingMode:{
+              exact:"environment"
+            },
+
+          },
+
+          {
+            fps:10,
+
+            qrbox:{
+              width:280,
+              height:120
+            }
+
+          },
+
+          decodedText=>{
+            finish(decodedText);
+          },
+
+          ()=>{}
+
+        );
+
+        return true;
+
+      }catch(e){
+
+        try{
+          html5Scanner.clear();
+        }catch(err){}
+
+        html5Scanner=null;
+
+        return false;
+
+      }
+
+    }
+
+  }
+
+
+  async function startScanner(){
+
+    status.textContent=
+      "Requesting camera permission...";
+
+    const nativeWorked=
+      await nativeScan();
+
+    if(nativeWorked){
+
+      return;
+
+    }
+
+    if(finished)return;
+
+    /*
+      Native BarcodeDetector is not available.
+      Try Html5Qrcode as the browser fallback.
+    */
+
+    status.textContent=
+      "Starting compatible camera scanner...";
+
+    const fallbackWorked=
+      await html5QrScan();
+
+    if(fallbackWorked){
+
+      return;
+
+    }
+
+    if(finished)return;
+
+    status.textContent=
+      "Camera scanning could not be started. You can still enter the barcode manually.";
+
+    note.style.display="block";
+
+    input.focus();
+
+  }
+
+  startScanner();
+
+}
+
+
+/* =========================================================
+   SCAN BUTTON
+========================================================= */
+
+document.getElementById(
+  "scanBtn"
+).onclick=()=>{
+
+  scanner(code=>{
+
+    const product=data.find(
+      p=>
+        String(
+          p.barcode||""
+        ).trim()===
+
+        String(
+          code
+        ).trim()
+    );
+
+    if(!product){
+
+      alert(
+        `No product or box found for barcode:\n${code}`
+      );
+
+      return;
+
+    }
+
+    showInventoryDetails(product.id);
+
+  });
+
+};
+
+
+/* =========================================================
+   INCOMING STOCK
+========================================================= */
+
+document.getElementById(
+  "addIncomingBtn"
+).onclick=()=>{
+
+  if(!data.length){
+
+    alert(
+      "No products are available."
+    );
+
+    return;
+
+  }
+
+  const names=data.map(
+    (product,index)=>
+
+      `${index+1}. ${
+        product.name
+      } [${
+        product.type==="bundle"
+        ?"BOX"
+        :"PRODUCT"
+      }] — ${
+        product.stock
+      } ${
+        product.type==="bundle"
+        ?"boxes"
+        :"units"
+      }`
+
+  ).join("\n");
+
+  const choice=prompt(
+`Select inventory item:
+
+${names}
+
+Enter number:`
+  );
+
+  if(!choice)return;
+
+  const index=Number(choice)-1;
+  const product=data[index];
+
+  if(!product){
+
+    alert(
+      "Invalid product selection."
+    );
+
+    return;
+
+  }
+
+  const quantity=Number(
+    prompt(
+      `Quantity to add for ${product.name}:`
+    )
+  );
+
+  if(
+    !Number.isFinite(quantity)||
+    quantity<1||
+    !Number.isInteger(quantity)
+  ){
+
+    alert(
+      "Enter a valid whole-number quantity."
+    );
+
+    return;
+
+  }
+
+  const batch=prompt(
+    "Batch number:",
+    product.batch||""
+  );
+
+  if(batch!==null){
+    product.batch=batch.trim();
+  }
+
+  const expiry=prompt(
+    "Expiry date:",
+    product.expiry||""
+  );
+
+  if(expiry===null)return;
+
+  const cleanExpiry=expiry.trim();
+
+  if(
+    cleanExpiry&&
+    Number.isNaN(
+      new Date(cleanExpiry).getTime()
+    )
+  ){
+
+    alert(
+      "Invalid expiry date."
+    );
+
+    return;
+
+  }
+
+  if(cleanExpiry){
+
+    product.expiry=
+      new Date(cleanExpiry).toLocaleDateString(
+        "en-GB",
+        {
+          day:"2-digit",
+          month:"short",
+          year:"numeric"
+        }
+      );
+
+  }
+
+  product.stock=
+    Number(product.stock||0)+quantity;
+
+  product.godown=MAIN_WAREHOUSE;
+
+  movements.push({
+
+    id:`MOV-${Date.now()}`,
+
+    type:"in",
+
+    name:product.name,
+
+    sku:product.sku,
+
+    barcode:product.barcode,
+
+    qty:quantity,
+
+    godown:MAIN_WAREHOUSE,
+
+    source:"Incoming stock",
+
+    time:new Date().toISOString()
+
+  });
+
+  save();
+  render();
+
+  alert(
+`✓ Incoming stock added.
+
+${product.name}
+
+Quantity: +${quantity}
+
+Warehouse: ${MAIN_WAREHOUSE}
+
+New stock: ${product.stock}`
+  );
+
+};
+
+
+/* =========================================================
+   SEARCH / FILTER
+========================================================= */
+
+searchEl.oninput=render;
+statusEl.onchange=render;
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+document.getElementById(
+  "refreshBtn"
+).onclick=()=>{
+
+  sync();
+
+};
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+const theme=document.getElementById("theme");
+
+function applyTheme(){
+
+  const saved=
+    localStorage.getItem(THEME_KEY);
+
+  if(saved==="light"){
+
+    document.body.classList.add("light");
+
+    theme.textContent="☀";
+
+  }else{
+
+    document.body.classList.remove("light");
+
+    theme.textContent="☾";
+
+  }
+
+}
+
+applyTheme();
+
+theme.onclick=()=>{
+
+  document.body.classList.toggle("light");
+
+  const isLight=
+    document.body.classList.contains("light");
+
+  localStorage.setItem(
+    THEME_KEY,
+    isLight?"light":"dark"
+  );
+
+  theme.textContent=
+    isLight?"☀":"☾";
+
+};
+
+
+/* =========================================================
+   SHARED GODOWN API
+========================================================= */
+
+window.GodownShared={
+
+  get:()=>{
+
+    data=loadInventory();
+
+    return data;
+
+  },
+
+  getByGodown:()=>{
+
+    data=loadInventory();
+
+    return data;
+
+  },
+
+  findBarcode:barcode=>{
+
+    data=loadInventory();
+
+    return data.find(
+      product=>
+
+        String(
+          product.barcode||""
+        ).trim()===
+
+        String(
+          barcode||""
+        ).trim()
+
+    )||null;
+
+  },
+
+  save:()=>{
+
+    save();
+    render();
+
+  },
+
+  refresh:()=>{
+
+    sync();
+
+  },
+
+  scanner,
+
+  showDetails:showInventoryDetails
+
+};
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+render();
+
+</script>
+
+</body>
+</html>
